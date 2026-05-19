@@ -5,6 +5,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getEvents, initializeData, type EventItem } from "@/lib/data-store";
+import PageSidebar from "@/components/page-sidebar";
+
+const sidebarLinks = [
+  { title: "Yalpi majlislar", href: "/tadbirlar/yalpi-majlislar" },
+  { title: "Siyosiy partiyalar yig'ilishlari", href: "/tadbirlar/siyosiy-partiyalar" },
+  { title: "Qo'mitalar yig'ilishi", href: "/tadbirlar/qomitalar-yigilishi" },
+  { title: "Boshqa tadbirlar", href: "/tadbirlar/boshqa" },
+];
 
 export default function BoshqaTadbirlar() {
   const [events, setEvents] = useState<EventItem[]>([]);
@@ -27,53 +35,38 @@ export default function BoshqaTadbirlar() {
       </section>
 
       <section className="container mx-auto px-4 py-8">
-        {events.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
-            <p className="text-lg">Hozircha boshqa tadbirlar mavjud emas</p>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {events.map((event) => (
-              <div key={event.id} className="bg-white rounded-lg shadow-sm overflow-hidden">
-                <div className="md:flex">
-                  {event.image && (
-                    <div className="md:w-1/3">
-                      <div className="relative h-[200px] w-full">
-                        <Image src={event.image} alt={event.title} fill className="object-cover" />
-                      </div>
-                    </div>
-                  )}
-                  <div className={event.image ? "md:w-2/3 p-6" : "p-6"}>
-                    <h3 className="text-xl font-semibold mb-3">{event.title}</h3>
-                    <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-3">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-4 w-4" />
-                        <span>{event.date}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
-                        <span>{event.time}</span>
-                      </div>
-                      {event.location && (
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-4 w-4" />
-                          <span>{event.location}</span>
-                        </div>
-                      )}
-                    </div>
-                    <p className="text-gray-700 mb-4">{event.description}</p>
-                    <Link
-                      href={`/tadbirlar/${event.id}`}
-                      className="inline-block bg-[#0047AB] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
-                    >
-                      Batafsil
-                    </Link>
-                  </div>
-                </div>
+        <div className="flex flex-col lg:flex-row gap-8">
+          <div className="flex-1 min-w-0">
+            {events.length === 0 ? (
+              <div className="text-center py-12 text-gray-500 bg-white rounded-lg border">
+                <p className="text-lg">Hozircha boshqa tadbirlar mavjud emas</p>
               </div>
-            ))}
+            ) : (
+              <div className="space-y-6">
+                {events.map((event) => (
+                  <div key={event.id} className="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <div className="md:flex">
+                      {event.image && (
+                        <div className="md:w-1/3"><div className="relative h-[200px] w-full"><Image src={event.image} alt={event.title} fill className="object-cover" /></div></div>
+                      )}
+                      <div className={event.image ? "md:w-2/3 p-6" : "p-6"}>
+                        <h3 className="text-xl font-semibold mb-3">{event.title}</h3>
+                        <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-3">
+                          <div className="flex items-center gap-1"><Calendar className="h-4 w-4" /><span>{event.date}</span></div>
+                          <div className="flex items-center gap-1"><Clock className="h-4 w-4" /><span>{event.time}</span></div>
+                          {event.location && <div className="flex items-center gap-1"><MapPin className="h-4 w-4" /><span>{event.location}</span></div>}
+                        </div>
+                        <p className="text-gray-700 mb-4 line-clamp-3">{event.description}</p>
+                        <Link href={`/tadbirlar/${event.id}`} className="inline-block bg-[#0047AB] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition">Batafsil</Link>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        )}
+          <PageSidebar links={sidebarLinks} />
+        </div>
       </section>
     </main>
   );

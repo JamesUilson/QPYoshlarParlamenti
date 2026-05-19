@@ -41,7 +41,7 @@ export default function ParlamentningYoshlarGuruxlari() {
       <section className="bg-[#0047AB] text-white py-12">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold mb-4">
-            Parlamentning yoshlar fraksiyalari
+            Parlamentning yoshlar guruhlari
           </h1>
           <p className="text-lg max-w-3xl">
             O'zbekiston Respublikasi Parlamentning yoshlar guruhlari haqida
@@ -60,10 +60,10 @@ export default function ParlamentningYoshlarGuruxlari() {
           </div>
           <div className="bg-white rounded-lg shadow-sm mb-5 lg:mb-0 p-6 mx-0 lg:mx-6 max-w-3xl">
             <h2 className="text-2xl font-bold mb-4">
-              Yoshlar parlamentidagi siyosiy partiyalar fraksiyalari
+              Yoshlar parlamentidagi siyosiy partiyalarning yoshlar guruhlari
             </h2>
             <p className="text-gray-700 mb-4">
-              Fraksiya siyosiy partiyadan ko'rsatiladigan deputatlar tomonidan
+              Ushbu yoshlar guruhlari siyosiy partiyadan ko'rsatiladigan deputatlar tomonidan
               partiya manfaatlarini Qonunchilik palatasida ifodalash maqsadida
               tuziladigan deputatlar birlashmasidir. Qonunchilik palatasining
               kamida besh nafar deputati fraksiya tuzish huquqiga ega.
@@ -79,7 +79,7 @@ export default function ParlamentningYoshlarGuruxlari() {
               fraksiyalar o'zlarini muxolifat deb e'lon qilishi mumkin.
             </p>
             <p className="text-gray-700">
-              <span className="font-bold">Fraksiya:</span> <br />
+              <span className="font-bold">Yoshlar guruhlari:</span> <br />
               Qonunchilik palatasi majlisining kun tartibi, muhokama
               qilinayotgan masalalarni ko'rib chiqish tartibi va mohiyati
               yuzasidan takliflar hamda fikr-mulohazalar kiritadi; Qonunchilik

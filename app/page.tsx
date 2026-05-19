@@ -4,7 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, useCallback } from "react";
 import { Calendar, ChevronRight, Clock, ChevronLeft } from "lucide-react";
-import { getNews, getEvents, initializeData, type NewsItem, type EventItem } from "@/lib/data-store";
+import { getNews, getEvents, getArticles, getMembers, getMedia, initializeData, type NewsItem, type EventItem, type Article, type Member, type MediaItem } from "@/lib/data-store";
+import UzbekistanMap from "@/components/uzbekistan-map";
 
 const MONTH_NAMES = [
   "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
@@ -56,6 +57,9 @@ const HERO_SLIDES = [
 export default function Home() {
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [events, setEvents] = useState<EventItem[]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [media, setMedia] = useState<MediaItem[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [calYear, setCalYear] = useState(new Date().getFullYear());
   const [calMonth, setCalMonth] = useState(new Date().getMonth());
@@ -64,6 +68,9 @@ export default function Home() {
     initializeData();
     setNewsItems(getNews());
     setEvents(getEvents());
+    setArticles(getArticles());
+    setMembers(getMembers());
+    setMedia(getMedia());
   }, []);
 
   useEffect(() => {
@@ -153,433 +160,494 @@ export default function Home() {
         </div>
       </section>
 
-      {/* News Section */}
-      <section className="py-10">
+      {/* ===== YANGILIKLAR ===== */}
+      <section className="py-10 bg-white">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="md:col-span-2">
-              <h2 className="text-2xl font-bold mb-6">So'nggi yangiliklar</h2>
-              <div className="space-y-6">
-                {newsItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex flex-col md:flex-row gap-4 border-b border-gray-200 pb-6"
-                  >
-                    <div className="md:w-1/4">
-                      <Image
-                        src={item.image || "/placeholder.svg"}
-                        alt={item.title}
-                        width={150}
-                        height={100}
-                        className="w-full h-auto object-cover"
-                      />
-                    </div>
-                    <div className="md:w-3/4">
-                      <div className="flex items-center text-sm text-gray-500 mb-2">
-                        <span>
-                          {item.date} | {item.time}
-                        </span>
-                        <span className="mx-2">|</span>
-                        <span>{item.location}</span>
-                      </div>
-                      <h3 className="text-xl font-semibold mb-2">
-                        {item.title}
-                      </h3>
-                      <p className="text-gray-700 mb-3">{item.description}</p>
-                      <Link
-                        href={`/yangiliklar/${item.id}`}
-                        className="text-blue-600 hover:underline font-medium"
-                      >
-                        Batafsil o'qish
-                      </Link>
-                    </div>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold">Yangiliklar</h2>
+            <Link href="/yangiliklar" className="text-[#0047AB] hover:underline flex items-center text-sm font-medium">
+              Barchasini ko'rish <ChevronRight className="h-4 w-4 ml-1" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {/* 3 big news cards (first 3) */}
+            <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-5">
+              {newsItems.slice(0, 3).map((item) => (
+                <Link key={item.id} href={`/yangiliklar/${item.id}`} className="group block">
+                  <div className="relative h-44 w-full rounded overflow-hidden mb-3">
+                    <Image
+                      src={item.image || "/placeholder.svg"}
+                      alt={item.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition duration-300"
+                    />
+                    {item.category && (
+                      <span className="absolute top-2 left-2 bg-[#0047AB] text-white text-xs px-2 py-0.5 rounded">
+                        {item.category}
+                      </span>
+                    )}
                   </div>
-                ))}
-              </div>
-              <div className="mt-6 text-center">
-                <Link
-                  href="/yangiliklar"
-                  className="inline-block border border-blue-600 text-blue-600 px-6 py-2 rounded-md font-medium hover:bg-blue-600 hover:text-white transition"
-                >
-                  Barcha yangiliklar
+                  <p className="text-xs text-[#0047AB] font-medium mb-1">{item.category}</p>
+                  <h3 className="text-sm font-semibold text-gray-800 group-hover:text-[#0047AB] transition line-clamp-3 mb-1">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-gray-500 line-clamp-2 mb-1">{item.description}</p>
+                  <p className="text-xs text-gray-400">{item.date}</p>
                 </Link>
-              </div>
-            </div>
-
-            {/* <div>
-              <h2 className="text-2xl font-bold mb-6">
-                Qonunchilik palatasi majlislari
-              </h2>
-              <div className="space-y-4">
-                {[1, 2, 3].map((item) => (
-                  <div key={item} className="bg-gray-100 p-4 rounded-lg">
-                    <div className="flex justify-between items-center mb-2">
-                      <div className="text-xl font-bold text-blue-600">
-                        {15 + item}
-                      </div>
-                      <div className="text-sm text-gray-500">May, 2025</div>
-                    </div>
-                    <h3 className="font-medium mb-2">
-                      {item === 1
-                        ? "Yalpi majlis"
-                        : item === 2
-                        ? "Qo'mita yig'ilishi"
-                        : "Xalqaro uchrashuv"}
-                    </h3>
-                    <p className="text-sm text-gray-600 mb-2">
-                      {item === 1
-                        ? "Qonunchilik palatasi yalpi majlisi"
-                        : item === 2
-                        ? "Qonunchilik palatasi qo'mitasi yig'ilishi"
-                        : "Xalqaro parlament delegatsiyasi bilan uchrashuv"}
-                    </p>
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-500">10:00 - 13:00</span>
-                      <Link
-                        href={`/tadbirlar/${item}`}
-                        className="text-blue-600 hover:underline"
-                      >
-                        Batafsil
-                      </Link>
-                    </div>
+              ))}
+              {/* Second row: next 3 big cards */}
+              {newsItems.slice(3, 6).map((item) => (
+                <Link key={item.id} href={`/yangiliklar/${item.id}`} className="group block">
+                  <div className="relative h-44 w-full rounded overflow-hidden mb-3">
+                    <Image
+                      src={item.image || "/placeholder.svg"}
+                      alt={item.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition duration-300"
+                    />
+                    {item.category && (
+                      <span className="absolute top-2 left-2 bg-[#0047AB] text-white text-xs px-2 py-0.5 rounded">
+                        {item.category}
+                      </span>
+                    )}
                   </div>
-                ))}
-                <div className="text-center mt-6">
-                  <Link
-                    href="/tadbirlar"
-                    className="inline-block border border-blue-600 text-blue-600 px-6 py-2 rounded-md font-medium hover:bg-blue-600 hover:text-white transition"
-                  >
-                    Barcha tadbirlar
-                  </Link>
-                </div>
-              </div>
-            </div> */}
+                  <p className="text-xs text-[#0047AB] font-medium mb-1">{item.category}</p>
+                  <h3 className="text-sm font-semibold text-gray-800 group-hover:text-[#0047AB] transition line-clamp-3 mb-1">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-gray-500 line-clamp-2 mb-1">{item.description}</p>
+                  <p className="text-xs text-gray-400">{item.date}</p>
+                </Link>
+              ))}
+            </div>
+            {/* Side list: items 6-12 (fallback to 3-6 if fewer) */}
+            <div className="lg:col-span-1 space-y-4 border-l border-gray-100 lg:pl-4">
+              {(newsItems.length > 6 ? newsItems.slice(6, 12) : newsItems.slice(3, 9)).map((item) => (
+                <Link key={item.id} href={`/yangiliklar/${item.id}`} className="flex gap-3 group">
+                  <div className="relative w-16 h-14 flex-shrink-0 rounded overflow-hidden">
+                    <Image
+                      src={item.image || "/placeholder.svg"}
+                      alt={item.title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[11px] text-gray-400 mb-0.5">{item.date}</p>
+                    <p className="text-xs font-medium text-gray-800 group-hover:text-[#0047AB] transition line-clamp-3 leading-snug">
+                      {item.title}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Tadbirlar Section */}
+      {/* ===== TADBIRLAR ===== */}
       <section className="py-10 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">Tadbirlar</h2>
-            <Link
-              href="/tadbirlar"
-              className="text-blue-600 hover:underline flex items-center"
-            >
+            <Link href="/tadbirlar" className="text-[#0047AB] hover:underline flex items-center text-sm font-medium">
               Barchasini ko'rish <ChevronRight className="h-4 w-4 ml-1" />
             </Link>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="md:w-1/3">
-                  {/* Calendar Header */}
-                  <div className="flex items-center justify-between mb-3">
-                    <button
-                      onClick={() => {
-                        if (calMonth === 0) { setCalMonth(11); setCalYear(calYear - 1); }
-                        else setCalMonth(calMonth - 1);
-                      }}
-                      className="p-1 hover:bg-gray-100 rounded"
-                    >
-                      <ChevronLeft className="h-4 w-4" />
-                    </button>
-                    <div className="text-center">
-                      <div className="text-sm font-bold">{MONTH_NAMES[calMonth]}</div>
-                      <div className="text-xs text-gray-500">{calYear}</div>
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {/* Calendar */}
+            <div className="lg:col-span-1 bg-white rounded-lg shadow-sm p-4">
+              <div className="flex items-center justify-between mb-3">
+                <button
+                  onClick={() => { if (calMonth === 0) { setCalMonth(11); setCalYear(calYear - 1); } else setCalMonth(calMonth - 1); }}
+                  className="p-1 hover:bg-gray-100 rounded"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <div className="text-center">
+                  <div className="text-sm font-bold">{MONTH_NAMES[calMonth]}</div>
+                  <div className="text-xs text-gray-500">{calYear}</div>
+                </div>
+                <button
+                  onClick={() => { if (calMonth === 11) { setCalMonth(0); setCalYear(calYear + 1); } else setCalMonth(calMonth + 1); }}
+                  className="p-1 hover:bg-gray-100 rounded"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="grid grid-cols-7 text-center text-xs font-medium text-gray-500 mb-1">
+                {DAY_NAMES.map((d) => <div key={d} className="p-1">{d}</div>)}
+              </div>
+              <div className="grid grid-cols-7 text-center text-xs">
+                {calendarDays.map((d, i) => {
+                  const isToday = isCurrentMonth && d.current && d.day === today.getDate();
+                  const hasEvent = d.current && hasEventOnDay(d.day);
+                  return (
+                    <div key={i} className={`p-1 rounded-full ${!d.current ? "text-gray-300" : isToday ? "bg-[#0047AB] text-white font-bold" : hasEvent ? "bg-blue-100 text-[#0047AB] font-medium" : "text-gray-700"}`}>
+                      {d.day}
                     </div>
-                    <button
-                      onClick={() => {
-                        if (calMonth === 11) { setCalMonth(0); setCalYear(calYear + 1); }
-                        else setCalMonth(calMonth + 1);
-                      }}
-                      className="p-1 hover:bg-gray-100 rounded"
-                    >
-                      <ChevronRight className="h-4 w-4" />
-                    </button>
-                  </div>
-                  {/* Day Names */}
-                  <div className="grid grid-cols-7 text-center text-xs font-medium text-gray-500 mb-1">
-                    {DAY_NAMES.map((d) => (
-                      <div key={d} className="p-1">{d}</div>
-                    ))}
-                  </div>
-                  {/* Calendar Days */}
-                  <div className="grid grid-cols-7 text-center text-sm">
-                    {calendarDays.map((d, i) => {
-                      const isToday = isCurrentMonth && d.current && d.day === today.getDate();
-                      const hasEvent = d.current && hasEventOnDay(d.day);
-                      return (
-                        <div
-                          key={i}
-                          className={`p-1 rounded-full ${
-                            !d.current ? "text-gray-300" :
-                            isToday ? "bg-[#0047AB] text-white font-bold" :
-                            hasEvent ? "bg-blue-100 text-[#0047AB] font-medium" :
-                            "text-gray-700"
-                          }`}
-                        >
-                          {d.day}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-                <div className="md:w-2/3">
-                  <div className="space-y-4">
-                    {events.slice(0, 3).map((event) => (
-                      <div
-                        key={event.id}
-                        className="border-b border-gray-200 pb-4"
-                      >
-                        <div className="flex items-center text-sm text-gray-500 mb-1">
-                          <Calendar className="h-4 w-4 mr-1" />
-                          <span>{event.date}</span>
-                          <span className="mx-2">|</span>
-                          <Clock className="h-4 w-4 mr-1" />
-                          <span>{event.time}</span>
-                        </div>
-                        <h3 className="font-medium mb-1 line-clamp-2">
-                          {event.title}
-                        </h3>
-                        <Link
-                          href={`/tadbirlar/${event.id}`}
-                          className="text-blue-600 hover:underline text-sm"
-                        >
-                          Batafsil
-                        </Link>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                  );
+                })}
               </div>
             </div>
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <div className="space-y-4">
-                {events.slice(3, 5).map((event) => (
-                  <div
-                    key={event.id}
-                    className="border-b border-gray-200 pb-4 last:border-0 last:pb-0"
-                  >
-                    <div className="flex items-center text-sm text-gray-500 mb-1">
-                      <Calendar className="h-4 w-4 mr-1" />
-                      <span>{event.date}</span>
-                      <span className="mx-2">|</span>
-                      <Clock className="h-4 w-4 mr-1" />
-                      <span>{event.time}</span>
-                    </div>
-                    <h3 className="font-medium mb-1">{event.title}</h3>
-                    <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-                      {event.description}
-                    </p>
-                    <Link
-                      href={`/tadbirlar/${event.id}`}
-                      className="text-blue-600 hover:underline text-sm"
-                    >
-                      Batafsil
-                    </Link>
+            {/* Event cards */}
+            <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {events.slice(0, 6).map((event) => (
+                <Link key={event.id} href={`/tadbirlar/${event.id}`} className="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition group">
+                  <div className="flex justify-between items-start text-xs text-gray-400 mb-2">
+                    <span>{event.date}</span>
+                    <span>{event.time}</span>
                   </div>
-                ))}
-              </div>
+                  <h3 className="text-sm font-semibold text-gray-800 group-hover:text-[#0047AB] transition line-clamp-3 mb-2">
+                    {event.title}
+                  </h3>
+                  <p className="text-xs text-gray-500 line-clamp-2">{event.description}</p>
+                </Link>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Mediateka Section */}
-      <section className="py-10">
+      {/* ===== MAQOLALAR ===== */}
+      <section className="py-10 bg-white">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">Mediateka</h2>
-            <Link
-              href="/mediateka"
-              className="text-blue-600 hover:underline flex items-center"
-            >
+            <h2 className="text-2xl font-bold">Maqolalar</h2>
+            <Link href="/maqolalar" className="text-[#0047AB] hover:underline flex items-center text-sm font-medium">
               Barchasini ko'rish <ChevronRight className="h-4 w-4 ml-1" />
             </Link>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-1">
-              <div className="relative h-[300px] w-full rounded-lg overflow-hidden">
-                <Image
-                  src="/images/media/IMG_8069.JPG"
-                  alt="Media Gallery"
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="h-16 w-16 rounded-full bg-white bg-opacity-80 flex items-center justify-center">
-                    <div className="h-12 w-12 rounded-full bg-[#0F4C81] flex items-center justify-center pl-1">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="white"
-                        className="w-6 h-6"
-                      >
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {/* 3 big article cards */}
+            <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+              {articles.slice(0, 6).map((article) => (
+                <Link key={article.id} href={article.fileUrl ? "#" : `/maqolalar/${article.id}`}
+                  {...(article.fileUrl ? { onClick: (e) => { e.preventDefault(); window.open(article.fileUrl, "_blank"); } } : {})}
+                  className="group block"
+                >
+                  <div className="relative h-44 w-full rounded overflow-hidden mb-3">
+                    <Image
+                      src={article.image || "/placeholder.svg"}
+                      alt={article.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition duration-300"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-400 mb-1">{article.date}</p>
+                  <h3 className="text-sm font-semibold text-gray-800 group-hover:text-[#0047AB] transition line-clamp-2 mb-1">
+                    {article.title}
+                  </h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="w-5 h-5 rounded-full bg-gray-200 flex-shrink-0 overflow-hidden">
+                      <div className="w-full h-full bg-[#0047AB] flex items-center justify-center text-white text-[8px]">
+                        {article.author?.[0] || "A"}
+                      </div>
                     </div>
+                    <p className="text-xs text-gray-500 truncate">{article.author}</p>
                   </div>
-                </div>
-              </div>
+                </Link>
+              ))}
             </div>
-            <div className="md:col-span-2 grid grid-cols-2 gap-4">
-              <div className="relative h-[140px] rounded-lg overflow-hidden">
-                <Image
-                  src="/images/media/IMG_3875.JPG"
-                  alt="Photo 1"
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="h-10 w-10 rounded-full bg-white bg-opacity-80 flex items-center justify-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="#0F4C81"
-                      className="w-6 h-6"
-                    >
-                      <path d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" />
-                    </svg>
+            {/* Side list */}
+            <div className="lg:col-span-1 space-y-4">
+              {articles.slice(6, 12).map((article) => (
+                <Link key={article.id} href={`/maqolalar/${article.id}`} className="flex gap-3 group">
+                  <div className="relative w-16 h-14 flex-shrink-0 rounded overflow-hidden">
+                    <Image
+                      src={article.image || "/placeholder.svg"}
+                      alt={article.title}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
-                </div>
-              </div>
-              <div className="relative h-[140px] rounded-lg overflow-hidden">
-                <Image
-                  src="/images/media/IMG_3997.JPG"
-                  alt="Photo 2"
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="h-10 w-10 rounded-full bg-white bg-opacity-80 flex items-center justify-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="#0F4C81"
-                      className="w-6 h-6"
-                    >
-                      <path d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" />
-                    </svg>
+                  <div>
+                    <p className="text-[11px] text-gray-400">{article.date}</p>
+                    <p className="text-xs font-medium text-gray-800 group-hover:text-[#0047AB] transition line-clamp-2">
+                      {article.title}
+                    </p>
+                    <p className="text-[11px] text-gray-400">{article.author}</p>
                   </div>
-                </div>
-              </div>
-              <div className="relative h-[140px] rounded-lg overflow-hidden">
-                <Image
-                  src="/images/media/IMG_3998.JPG"
-                  alt="Photo 3"
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="h-10 w-10 rounded-full bg-white bg-opacity-80 flex items-center justify-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="#0F4C81"
-                      className="w-6 h-6"
-                    >
-                      <path d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              <div className="relative h-[140px] rounded-lg overflow-hidden">
-                <Image
-                  src="/images/media/IMG_3999.JPG"
-                  alt="Photo 4"
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="h-10 w-10 rounded-full bg-white bg-opacity-80 flex items-center justify-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="#0F4C81"
-                      className="w-6 h-6"
-                    >
-                      <path d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <h3 className="text-2xl font-bold mb-4 mt-12">Foydali havolalar</h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
-            <div className="bg-gray-100 p-4 rounded-lg text-center">
-              <a href="https://president.uz/oz/pages/view/about_staff?menu_id=15">
-                <div className="mb-3">
-                  <Image
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Emblem_of_Uzbekistan.svg/1200px-Emblem_of_Uzbekistan.svg.png"
-                    alt="President.uz"
-                    width={60}
-                    height={60}
-                    className="mx-auto"
-                  />
-                </div>
-                <h3 className="text-sm font-medium mb-1">
-                  O'zbekiston Respublikasi Prezidenti
-                </h3>
-              </a>
-            </div>
-            <div className="bg-gray-100 p-4 rounded-lg text-center">
-              <a href="https://parliament.gov.uz/">
-                <div className="mb-3">
-                  <Image
-                    src="https://senat.uz/media/post/images/1678712800626015.jpg"
-                    alt="Parliament.gov.uz"
-                    width={60}
-                    height={60}
-                    className="mx-auto mt-6"
-                  />
-                </div>
-                <h3 className="text-sm font-medium mb-1">
-                  O'zbekiston Respublikasi Oliy Majlisi
-                </h3>
-              </a>
-            </div>
-            <div className="bg-gray-100 p-4 rounded-lg text-center">
-              <a href="https://gov.uz/oz/yoshlar">
-                <div className="mb-3">
-                  <Image
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoMtJb1iPPysvVP-XwNiU3MAikGD9Bgju1KGAwSiYNj1gZGdzfgXfx9xOjixwk9ya9Xrg&usqp=CAU"
-                    alt="Gov.uz"
-                    width={60}
-                    height={60}
-                    className="mx-auto mt-6"
-                  />
-                </div>
-                <h3 className="text-sm font-medium mb-1">
-                  O'zbekiston Respublikasi Hukumati portali
-                </h3>
-              </a>
-            </div>
-            <div className="bg-gray-100 p-4 rounded-lg text-center">
-              <a href="https://pri.oliymajlis.uz/">
-                <div className="mb-3">
-                  <Image
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTJIxc4j2_KzTRl2xoJiCa5tsGzTOjxW1LOQ&s"
-                    alt="PRI Oliy Majlis"
-                    width={60}
-                    height={60}
-                    className="mx-auto"
-                  />
-                </div>
-                <h3 className="text-sm font-medium mb-1">
-                  O'zbekiston Respublikasi Oliy Majlisi huzuridagi Parlament
-                  tadqiqotlari instituti
-                </h3>
-              </a>
+                </Link>
+              ))}
             </div>
           </div>
         </div>
       </section>
+
+      {/* ===== INTERAKTIV XARITA ===== */}
+      <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-1 h-7 bg-[#0047AB] rounded" />
+            <h2 className="text-2xl font-bold text-gray-900">Interaktiv xarita</h2>
+          </div>
+          <UzbekistanMap members={members} />
+        </div>
+      </section>
+
+      {/* ===== MEDIATEKA ===== */}
+      {media.length > 0 && (() => {
+        const recent = [...media].slice(0, 5);
+        const featured = recent[0];
+        const rest = recent.slice(1, 5);
+        return (
+          <section className="py-12 bg-white">
+            <div className="container mx-auto px-4">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold">Mediateka</h2>
+                <Link href="/mediateka" className="text-[#0047AB] hover:underline flex items-center text-sm font-medium">
+                  Barchasini ko&apos;rish <ChevronRight className="h-4 w-4 ml-1" />
+                </Link>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                {/* Featured (large left) */}
+                <div className="lg:col-span-1 relative rounded-xl overflow-hidden group cursor-pointer" style={{ minHeight: 280 }}>
+                  <Link href="/mediateka">
+                    <Image
+                      src={featured.image || "/placeholder.svg"}
+                      alt={featured.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                    {featured.type === "video" && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm border-2 border-white/60 flex items-center justify-center">
+                          <svg viewBox="0 0 24 24" fill="white" className="w-6 h-6 ml-1"><path d="M8 5v14l11-7z" /></svg>
+                        </div>
+                      </div>
+                    )}
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <p className="text-white font-bold text-sm leading-snug line-clamp-2">{featured.title}</p>
+                      <p className="text-white/70 text-xs mt-1">{featured.date}</p>
+                    </div>
+                  </Link>
+                </div>
+                {/* 2x2 grid (right) */}
+                <div className="lg:col-span-2 grid grid-cols-2 gap-4">
+                  {rest.map((item) => (
+                    <Link
+                      key={item.id}
+                      href="/mediateka"
+                      className="relative rounded-xl overflow-hidden group cursor-pointer"
+                      style={{ minHeight: 130 }}
+                    >
+                      <Image
+                        src={item.image || "/placeholder.svg"}
+                        alt={item.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition duration-300"
+                      />
+                      <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition" />
+                      {item.type === "video" && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-10 h-10 rounded-full bg-white/20 border border-white/50 flex items-center justify-center">
+                            <svg viewBox="0 0 24 24" fill="white" className="w-4 h-4 ml-0.5"><path d="M8 5v14l11-7z" /></svg>
+                          </div>
+                        </div>
+                      )}
+                      {item.type === "photo" && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-10 h-10 rounded-full bg-white/20 border border-white/50 flex items-center justify-center">
+                            <svg viewBox="0 0 24 24" fill="white" className="w-4 h-4"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" /></svg>
+                          </div>
+                        </div>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      })()}
+
+      {/* ===== OTHERS (rasmli overlay kartalar) ===== */}
+      <OthersSection />
+
+      {/* ===== FOYDALI HAVOLALAR (slider) ===== */}
+      <UsefullSection />
     </main>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  OTHERS SECTION                                                      */
+/* ------------------------------------------------------------------ */
+const OTHERS = [
+  {
+    href: "https://pri.oliymajlis.uz",
+    bg: "https://parliament.gov.uz/_nuxt/img/others1.0f7ac04.jpg",
+    logo: "https://parliament.gov.uz/_nuxt/img/others-logo1.4dd6056.png",
+    // fallbackBg: "#1a3a5c",
+    label: "O'zbekiston Respublikasi Oliy Majlisi Qonunchilik palatasi huzuridagi Parlament tadqiqotlari instituti",
+  },
+  {
+    href: "https://ngo.gov.uz/oz",
+    bg: "https://parliament.gov.uz/_nuxt/img/others3.3c0df1e.jpg",
+    logo: "https://ngo.gov.uz/favicon.ico",
+    // fallbackBg: "#1e4a2d",
+    label: "Oliy Majlis huzuridagi Fuqarolik jamiyati institutlarini qo'llab-quvvatlash jamoat fondi",
+  },
+  {
+    href: "http://www.ombudsman.uz/",
+    bg: "https://i.pinimg.com/originals/0a/08/c5/0a08c5c3fb7ec15475c94815c23b7865.jpg?nii=t",
+    logo: "https://parliament.gov.uz/media/interactive_services/usefulll.png",
+    fallbackBg: "#2d3a5c",
+    label: "O'zbekiston Respublikasi Oliy Majlisining Inson huquqlari bo'yicha vakili (Ombudsman)",
+  },
+  {
+    href: "https://bolalarvakili.uz/",
+    bg: "https://parliament.gov.uz/_nuxt/img/others2.f9bcd51.jpg",
+    logo: "https://bolalarvakili.uz/favicon.ico",
+    fallbackBg: "#3a2d5c",
+    label: "O'zbekiston Respublikasi Oliy Majlisining Bola huquqlari bo'yicha vakili (Bolalar ombudsmani)",
+  },
+];
+
+function OthersSection() {
+  return (
+    <section className="py-10 bg-white">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {OTHERS.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative rounded-xl overflow-hidden group block"
+              style={{ minHeight: 180, background: item.fallbackBg }}
+            >
+              {/* Background image */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={item.bg}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-300"
+              />
+              {/* Dark overlay */}
+              <div className="absolute inset-0 bg-black/55 group-hover:bg-black/65 transition" />
+              {/* Content */}
+              <div className="absolute inset-0 p-4 flex flex-col justify-start">
+                <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center mb-3 flex-shrink-0 overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={item.logo} alt="" className="w-7 h-7 object-contain" />
+                </div>
+                <p className="text-white text-xs font-semibold leading-snug line-clamp-4">{item.label}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  FOYDALI HAVOLALAR SLIDER                                            */
+/* ------------------------------------------------------------------ */
+const USEFULL_LINKS = [
+  {
+    href: "https://my.gov.uz",
+    logo: "https://parliament.gov.uz/media/interactive_services/usefull4.png",
+    label: "Yagona interaktiv davlat xizmatlari portali",
+    url: "www.my.gov.uz",
+  },
+  {
+    href: "http://ombudsman.uz",
+    logo: "https://parliament.gov.uz/media/interactive_services/usefulll.png",
+    label: "O'zbekiston Respublikasi Oliy Majlisining Inson huquqlari bo'yicha vakili",
+    url: "www.ombudsman.uz",
+  },
+  {
+    href: "https://president.uz",
+    logo: "https://parliament.gov.uz/media/interactive_services/usefull5_T39hHvI.png",
+    label: "O'zbekiston Respublikasi Prezidentining rasmiy veb-sayti",
+    url: "www.president.uz",
+  },
+  {
+    href: "https://senat.uz",
+    logo: "https://parliament.gov.uz/media/interactive_services/senat-build_tFdRS5u.png",
+    label: "O'zbekiston Respublikasi Oliy Majlisi Senati",
+    url: "www.senat.uz",
+  },
+  {
+    href: "https://gov.uz",
+    logo: "https://parliament.gov.uz/media/interactive_services/favicon_31jjx8x.png",
+    label: "O'zbekiston Respublikasi hukumat portali",
+    url: "www.gov.uz",
+  },
+  {
+    href: "https://dba.uz",
+    logo: "https://parliament.gov.uz/media/interactive_services/favicon.png",
+    label: "O'zbekiston Respublikasi Prezidenti huzuridagi Davlat boshqaruvi akademiyasi",
+    url: "www.dba.uz",
+  },
+  {
+    href: "http://data.gov.uz",
+    logo: "https://parliament.gov.uz/media/interactive_services/usefull3.png",
+    label: "O'zbekiston Respublikasi ochiq ma'lumotlar portali",
+    url: "www.data.gov.uz",
+  },
+];
+
+const VISIBLE = 5;
+
+function UsefullSection() {
+  const [start, setStart] = useState(0);
+  const total = USEFULL_LINKS.length;
+  const prev = () => setStart((s) => (s - 1 + total) % total);
+  const next = () => setStart((s) => (s + 1) % total);
+  const visible = Array.from({ length: VISIBLE }, (_, i) => USEFULL_LINKS[(start + i) % total]);
+
+  return (
+    <section className="py-10 bg-gray-50">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold">Foydali havolalar</h2>
+          <div className="flex gap-2">
+            <button
+              onClick={prev}
+              className="w-8 h-8 rounded-full bg-[#0047AB] text-white flex items-center justify-center hover:bg-blue-700 transition"
+              aria-label="Oldingi"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button
+              onClick={next}
+              className="w-8 h-8 rounded-full bg-[#0047AB] text-white flex items-center justify-center hover:bg-blue-700 transition"
+              aria-label="Keyingi"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+          {visible.map((item, i) => (
+            <a
+              key={`${item.href}-${i}`}
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white rounded-xl p-5 flex flex-col items-center text-center shadow-sm hover:shadow-md transition group border border-gray-100"
+            >
+              <div className="w-14 h-14 flex items-center justify-center mb-3">
+                <Image
+                  src={item.logo}
+                  alt={item.label}
+                  width={56}
+                  height={56}
+                  className="object-contain h-14 w-14"
+                />
+              </div>
+              <p className="text-xs font-medium text-gray-700 leading-snug line-clamp-3 mb-2">{item.label}</p>
+              <span className="text-xs text-[#0047AB] group-hover:underline mt-auto">{item.url}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }

@@ -12,7 +12,8 @@ import {
   Image as ImageIcon, 
   LogOut,
   Menu,
-  X
+  X,
+  Globe
 } from "lucide-react";
 import { isAdminLoggedIn, logoutAdmin } from "@/lib/data-store";
 import { Button } from "@/components/ui/button";
@@ -55,6 +56,10 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     { href: "/admin/news", icon: Newspaper, label: "Yangiliklar" },
     { href: "/admin/events", icon: Calendar, label: "Tadbirlar" },
     { href: "/admin/members", icon: Users, label: "A'zolar" },
+    { href: "/admin/kengash", icon: Users, label: "Kengash tarkibi" },
+    { href: "/admin/rahbariyat", icon: Users, label: "Rahbariyat" },
+    { href: "/admin/districts", icon: LayoutDashboard, label: "Saylov okruglari" },
+    { href: "/admin/friendship-groups", icon: Globe, label: "Do'stlik guruhlar" },
     { href: "/admin/articles", icon: FileText, label: "Maqolalar" },
     { href: "/admin/media", icon: ImageIcon, label: "Mediateka" },
   ];

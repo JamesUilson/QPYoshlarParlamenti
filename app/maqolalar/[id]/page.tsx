@@ -3,23 +3,22 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, use } from "react";
 import { getArticleById, initializeData, type Article } from "@/lib/data-store";
 
 interface PageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 export default function ArticleDetail({ params }: PageProps) {
+  const { id } = use(params);
   const [article, setArticle] = useState<Article | null>(null);
 
   useEffect(() => {
     initializeData();
-    const found = getArticleById(params.id);
+    const found = getArticleById(id);
     setArticle(found);
-  }, [params.id]);
+  }, [id]);
 
   if (!article) {
     return (

@@ -1,60 +1,18 @@
-import Link from "next/link";
 import React from "react";
+import PageSidebar from "@/components/page-sidebar";
+
+const QOMITA_SIDEBAR_LINKS = [
+  { title: "Yoshlar parlamenti tarixi", href: "/yoshlar-parlamenti/tarixi" },
+  { title: "Yoshlar parlamenti Kengashi", href: "/yoshlar-parlamenti/kengashi" },
+  { title: "Yoshlar parlamenti Rahbariyati", href: "/yoshlar-parlamenti/rahbariyati" },
+  { title: "Yoshlar parlamenti a'zolari", href: "/yoshlar-parlamenti-azolari" },
+  { title: "Yoshlar parlamenti Qo'mitalari", href: "/yoshlar-parlamenti/qomitalar" },
+  { title: "Yoshlar guruhlari", href: "/yoshlar-parlamenti/parlamentning-yoshlar-guruxlari" },
+  { title: "Yoshlar parlamenti Nizomi", href: "/yoshlar-parlamenti/nizomi" },
+];
 
 const RightSidebar = () => {
-  return (
-    <div className="w-full lg:w-1/4">
-      <div className="bg-blue-600 text-white rounded-lg overflow-hidden">
-        <div className="p-4 border-b border-blue-500">
-          <h2 className="font-bold">Parlament tarixi</h2>
-        </div>
-        <div className="p-4">
-          <ul className="space-y-2">
-            <li>
-              <Link href="#" className="hover:underline">
-                Qonunchilik palatasi kengashi tarixi
-              </Link>
-            </li>
-            <li>
-              <Link href="#" className="hover:underline">
-                Qonunchilik palatasi rahbariyati
-              </Link>
-            </li>
-            <li>
-              <Link href="#" className="hover:underline">
-                Fraksiyalar
-              </Link>
-            </li>
-            <li>
-              <Link href="#" className="hover:underline">
-                Qo'mitalar
-              </Link>
-            </li>
-            <li>
-              <Link href="#" className="hover:underline">
-                Komissiyalar
-              </Link>
-            </li>
-            <li>
-              <Link href="#" className="hover:underline">
-                Deputatlar
-              </Link>
-            </li>
-            <li>
-              <Link href="#" className="hover:underline">
-                Saylov okruglari
-              </Link>
-            </li>
-            <li>
-              <Link href="#" className="hover:underline">
-                Qonunchilik palatasi Devoni
-              </Link>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
+  return <PageSidebar links={QOMITA_SIDEBAR_LINKS} />;
 };
 
 export default RightSidebar;

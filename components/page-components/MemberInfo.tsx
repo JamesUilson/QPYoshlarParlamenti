@@ -1,7 +1,10 @@
+"use client";
+
 import { Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getDistricts, type ElectionDistrict } from "@/lib/data-store";
 
 interface Article {
   id: string | number;
@@ -13,6 +16,10 @@ interface Member {
   name: string;
   image?: string;
   position?: string;
+  region?: string;
+  fraction?: string;
+  committee?: string;
+  yoshlarGuruhi?: string;
   birthYear?: string | number;
   birthPlace?: string;
   nationality?: string;
@@ -26,6 +33,16 @@ interface Member {
 }
 
 const MemberInfo = ({ member }: { member: Member }) => {
+  const [district, setDistrict] = useState<ElectionDistrict | null>(null);
+
+  useEffect(() => {
+    if (member.region) {
+      const list = getDistricts();
+      const found = list.find(d => d.name === member.region) || null;
+      setDistrict(found);
+    }
+  }, [member.region]);
+
   return (
     <div className="md:w-3/4">
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
@@ -57,6 +74,34 @@ const MemberInfo = ({ member }: { member: Member }) => {
                 <h2 className="font-semibold mb-1">Lavozimi:</h2>
                 <p>{member.position}</p>
               </div>
+
+              {member.region && (
+                <div className="border-b border-gray-300 pb-3">
+                  <h2 className="font-semibold mb-1">Saylov okrugi:</h2>
+                  <p>{member.region}</p>
+                </div>
+              )}
+
+              {member.fraction && (
+                <div className="border-b border-gray-300 pb-3">
+                  <h2 className="font-semibold mb-1">Fraksiyaga a'zoligi:</h2>
+                  <p>{member.fraction}</p>
+                </div>
+              )}
+
+              {member.committee && (
+                <div className="border-b border-gray-300 pb-3">
+                  <h2 className="font-semibold mb-1">Qo'mitasi:</h2>
+                  <p>{member.committee}</p>
+                </div>
+              )}
+
+              {member.yoshlarGuruhi && (
+                <div className="border-b border-gray-300 pb-3">
+                  <h2 className="font-semibold mb-1">Yoshlar guruhi:</h2>
+                  <p>{member.yoshlarGuruhi}</p>
+                </div>
+              )}
 
               <div className="border-b border-gray-300 pb-3">
                 <h2 className="font-semibold mb-1">Tug'ilgan yili:</h2>
@@ -115,19 +160,51 @@ const MemberInfo = ({ member }: { member: Member }) => {
       {/* Additional Information */}
       <div className="mt-8">
         <h2 className="text-2xl font-bold mb-6">Qo'shimcha ma'lumotlar</h2>
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <p className="text-gray-700 mb-4">
-            {member.name} {member.position} lavozimida faoliyat yuritib
-            kelmoqda. U o'z faoliyati davomida yoshlar manfaatlarini ifoda
-            etish, yoshlar siyosatini takomillashtirish, yoshlarning
-            ijtimoiy-siyosiy faolligini oshirish yo'nalishlarida samarali ishlar
-            olib bormoqda.
-          </p>
-          <p className="text-gray-700">
-            {member.name} bir qator xalqaro konferensiyalarda ishtirok etgan,
-            yoshlar masalalari bo'yicha bir qancha maqolalar va ilmiy ishlar
-            muallifi hisoblanadi.
-          </p>
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          <table className="w-full text-sm">
+            <tbody className="divide-y divide-gray-100">
+              {member.region && (
+                <tr className="hover:bg-gray-50">
+                  <td className="px-6 py-4 font-semibold text-gray-700 w-48 align-top">Saylov okrugi:</td>
+                  <td className="px-6 py-4 text-gray-800">{member.region}</td>
+                </tr>
+              )}
+              {district && (
+                <tr className="hover:bg-gray-50">
+                  <td className="px-6 py-4 font-semibold text-gray-700 w-48 align-top">Viloyat:</td>
+                  <td className="px-6 py-4 text-gray-800">{district.region}</td>
+                </tr>
+              )}
+              {district && district.districts.length > 0 && (
+                <tr className="hover:bg-gray-50">
+                  <td className="px-6 py-4 font-semibold text-gray-700 w-48 align-top">Tumanlar:</td>
+                  <td className="px-6 py-4 text-gray-800">{district.districts.join(" , ")}</td>
+                </tr>
+              )}
+              {district && district.mahallas && district.mahallas.length > 0 && (
+                <tr className="hover:bg-gray-50">
+                  <td className="px-6 py-4 font-semibold text-gray-700 w-48 align-top">Mahallalar:</td>
+                  <td className="px-6 py-4">
+                    <span className="text-[#0047AB] leading-relaxed">
+                      {district.mahallas.join(" , ")}
+                    </span>
+                  </td>
+                </tr>
+              )}
+              {member.committee && (
+                <tr className="hover:bg-gray-50">
+                  <td className="px-6 py-4 font-semibold text-gray-700 w-48">Qo'mitasi:</td>
+                  <td className="px-6 py-4 text-gray-800">{member.committee}</td>
+                </tr>
+              )}
+              {member.yoshlarGuruhi && (
+                <tr className="hover:bg-gray-50">
+                  <td className="px-6 py-4 font-semibold text-gray-700 w-48">Yoshlar guruhi:</td>
+                  <td className="px-6 py-4 text-gray-800">{member.yoshlarGuruhi}</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
 

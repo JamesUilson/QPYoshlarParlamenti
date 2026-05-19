@@ -33,7 +33,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { getEvents, addEvent, updateEvent, deleteEvent, initializeData, type EventItem } from "@/lib/data-store";
+import { getEvents, addEvent, updateEvent, deleteEvent, initializeData, compressImageBase64, type EventItem } from "@/lib/data-store";
 
 const EventsPage = () => {
   const [events, setEvents] = useState<EventItem[]>([]);
@@ -119,8 +119,9 @@ const EventsPage = () => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => {
-      setFormData({ ...formData, image: reader.result as string });
+    reader.onload = async () => {
+      const compressed = await compressImageBase64(reader.result as string);
+      setFormData(prev => ({ ...prev, image: compressed }));
     };
     reader.readAsDataURL(file);
   };

@@ -33,10 +33,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { getMembers, addMember, updateMember, deleteMember, initializeData, type Member } from "@/lib/data-store";
+import { getMembers, addMember, updateMember, deleteMember, getCommittees, getDistricts, initializeData, type Member, type Committee, type ElectionDistrict } from "@/lib/data-store";
 
 const MembersPage = () => {
   const [members, setMembers] = useState<Member[]>([]);
+  const [committees, setCommittees] = useState<Committee[]>([]);
+  const [districts, setDistricts] = useState<ElectionDistrict[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -58,11 +60,15 @@ const MembersPage = () => {
     degree: "",
     languages: "",
     email: "",
+    committee: "",
+    yoshlarGuruhi: "",
   });
 
   useEffect(() => {
     initializeData();
     setMembers(getMembers());
+    setCommittees(getCommittees());
+    setDistricts(getDistricts());
   }, []);
 
   const filteredMembers = members.filter(
@@ -111,6 +117,8 @@ const MembersPage = () => {
       degree: "",
       languages: "",
       email: "",
+      committee: "",
+      yoshlarGuruhi: "",
     });
     setSelectedMember(null);
   };
@@ -132,6 +140,8 @@ const MembersPage = () => {
       degree: item.degree || "",
       languages: item.languages || "",
       email: item.email || "",
+      committee: item.committee || "",
+      yoshlarGuruhi: item.yoshlarGuruhi || "",
     });
     setIsEditDialogOpen(true);
   };
@@ -180,12 +190,15 @@ const MembersPage = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="region">Saylov okrugi</Label>
-                <Input
+                <select
                   id="region"
                   value={formData.region}
                   onChange={(e) => setFormData({ ...formData, region: e.target.value })}
-                  placeholder="1-Qoraqalpog'iston Respublikasi saylov okrugi"
-                />
+                  className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
+                >
+                  <option value="">— Saylov okrugini tanlang —</option>
+                  {districts.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
+                </select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="image">Rasm</Label>
@@ -314,6 +327,34 @@ const MembersPage = () => {
                   placeholder="example@email.com"
                 />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="committee">Qo'mitasi</Label>
+                <select
+                  id="committee"
+                  value={formData.committee}
+                  onChange={(e) => setFormData({ ...formData, committee: e.target.value })}
+                  className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
+                >
+                  <option value="">— Qo'mita tanlang —</option>
+                  {committees.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="yoshlarGuruhi">Yoshlar guruhi</Label>
+                <select
+                  id="yoshlarGuruhi"
+                  value={formData.yoshlarGuruhi}
+                  onChange={(e) => setFormData({ ...formData, yoshlarGuruhi: e.target.value })}
+                  className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
+                >
+                  <option value="">— Yoshlar guruhi tanlang —</option>
+                  <option value="O'zLiDeP yoshlar guruhi">O'zLiDeP yoshlar guruhi</option>
+                  <option value="Milliy tiklanish yoshlar guruhi">Milliy tiklanish yoshlar guruhi</option>
+                  <option value="Adolat yoshlar guruhi">Adolat yoshlar guruhi</option>
+                  <option value="XDP yoshlar guruhi">XDP yoshlar guruhi</option>
+                  <option value="Ekologik partiya yoshlar guruhi">Ekologik partiya yoshlar guruhi</option>
+                </select>
+              </div>
             </div>
             <DialogFooter>
               <DialogClose asChild>
@@ -405,11 +446,15 @@ const MembersPage = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="edit-region">Saylov okrugi</Label>
-              <Input
+              <select
                 id="edit-region"
                 value={formData.region}
                 onChange={(e) => setFormData({ ...formData, region: e.target.value })}
-              />
+                className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
+              >
+                <option value="">— Saylov okrugini tanlang —</option>
+                {districts.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
+              </select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="edit-image">Rasm</Label>
@@ -429,7 +474,7 @@ const MembersPage = () => {
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="edit-fraction">Fraksiya</Label>
+              <Label htmlFor="edit-fraction">Partiyasi</Label>
               <select
                 id="edit-fraction"
                 value={formData.fraction}
@@ -526,6 +571,34 @@ const MembersPage = () => {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-committee">Qo'mitasi</Label>
+              <select
+                id="edit-committee"
+                value={formData.committee}
+                onChange={(e) => setFormData({ ...formData, committee: e.target.value })}
+                className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
+              >
+                <option value="">— Qo'mita tanlang —</option>
+                {committees.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-yoshlarGuruhi">Yoshlar guruhi</Label>
+              <select
+                id="edit-yoshlarGuruhi"
+                value={formData.yoshlarGuruhi}
+                onChange={(e) => setFormData({ ...formData, yoshlarGuruhi: e.target.value })}
+                className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
+              >
+                <option value="">— Yoshlar guruhi tanlang —</option>
+                <option value="O'zLiDeP yoshlar guruhi">O'zLiDeP yoshlar guruhi</option>
+                <option value="Milliy tiklanish yoshlar guruhi">Milliy tiklanish yoshlar guruhi</option>
+                <option value="Adolat yoshlar guruhi">Adolat yoshlar guruhi</option>
+                <option value="XDP yoshlar guruhi">XDP yoshlar guruhi</option>
+                <option value="Ekologik partiya yoshlar guruhi">Ekologik partiya yoshlar guruhi</option>
+              </select>
             </div>
           </div>
           <DialogFooter>

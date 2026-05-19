@@ -2,29 +2,28 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { Calendar, ChevronRight, ArrowLeft } from "lucide-react";
 import { getNewsById, getNews, initializeData, type NewsItem } from "@/lib/data-store";
 
 interface PageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 export default function NewsDetail({ params }: PageProps) {
+  const { id } = use(params);
   const [newsItem, setNewsItem] = useState<NewsItem | null>(null);
   const [relatedNews, setRelatedNews] = useState<NewsItem[]>([]);
 
   useEffect(() => {
     initializeData();
-    const item = getNewsById(params.id);
+    const item = getNewsById(id);
     if (item) {
       setNewsItem(item);
-      const allNews = getNews().filter((n) => n.id !== params.id);
+      const allNews = getNews().filter((n) => n.id !== id);
       setRelatedNews(allNews.slice(0, 4));
     }
-  }, [params.id]);
+  }, [id]);
 
   if (!newsItem) {
     return (

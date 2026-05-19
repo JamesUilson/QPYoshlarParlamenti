@@ -1,13 +1,23 @@
 import Image from "next/image"
+import PageSidebar from "@/components/page-sidebar";
+
+const SIDEBAR_LINKS = [
+  { title: "Yoshlar parlamenti tarixi", href: "/yoshlar-parlamenti/tarixi" },
+  { title: "Yoshlar parlamenti Kengashi", href: "/yoshlar-parlamenti/kengashi" },
+  { title: "Yoshlar parlamenti Rahbariyati", href: "/yoshlar-parlamenti/rahbariyati" },
+  { title: "Yoshlar parlamenti a'zolari", href: "/yoshlar-parlamenti-azolari" },
+  { title: "Yoshlar parlamenti Qo'mitalari", href: "/yoshlar-parlamenti/qomitalar" },
+  { title: "Yoshlar parlamenti Nizomi", href: "/yoshlar-parlamenti/nizomi" },
+];
 
 export default function YoshlarParlamentiTarixi() {
   return (
     <main className="min-h-screen bg-gray-50 pb-16">
       {/* Page Header */}
-      <section className="bg-[#0047AB] text-white py-12">
+      <section className="bg-[#0047AB] text-white py-10">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-4">Yoshlar parlamenti tarixi</h1>
-          <p className="text-lg max-w-3xl">
+          <h1 className="text-2xl font-bold mb-1">Yoshlar parlamenti tarixi</h1>
+          <p className="text-sm text-white/80">
             O'zbekiston Respublikasi Yoshlar parlamenti tashkil etilishi va rivojlanishi tarixi
           </p>
         </div>
@@ -15,6 +25,8 @@ export default function YoshlarParlamentiTarixi() {
 
       {/* Content Section */}
       <section className="container mx-auto px-4 py-8">
+        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex-1 min-w-0">
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
           <h2 className="text-2xl font-bold mb-4">Yoshlar parlamenti tarixi</h2>
           <p className="text-gray-700 mb-4">
@@ -173,6 +185,9 @@ export default function YoshlarParlamentiTarixi() {
           <p className="text-gray-700">
             Uchinchi chaqiriq Yoshlar parlamenti raisi Sobitov Otabekxo'ja Yo'ldosh o'g'li saylangan.
           </p>
+        </div>
+        </div>
+        <PageSidebar links={SIDEBAR_LINKS} />
         </div>
       </section>
     </main>

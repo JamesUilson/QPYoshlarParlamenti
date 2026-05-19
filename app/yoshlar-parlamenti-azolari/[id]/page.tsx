@@ -4,23 +4,22 @@ import MemberInfo from "@/components/page-components/MemberInfo";
 import Sidebar from "@/components/page-components/RightSidebar";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, use } from "react";
 import { getMemberById, initializeData, type Member } from "@/lib/data-store";
 
 interface PageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 const MemberDetail = ({ params }: PageProps) => {
+  const { id } = use(params);
   const [member, setMember] = useState<Member | null>(null);
 
   useEffect(() => {
     initializeData();
-    const found = getMemberById(params.id);
+    const found = getMemberById(id);
     setMember(found);
-  }, [params.id]);
+  }, [id]);
 
   return (
     <main className="min-h-screen bg-gray-50 pb-16">

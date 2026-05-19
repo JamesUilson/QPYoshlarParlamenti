@@ -1,125 +1,151 @@
-import LeftSidebar from "@/components/page-components/LeftSidebar";
-import RightSidebar from "@/components/page-components/RightSidebar";
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { Users } from "lucide-react";
+import { getCommittees, getMembers, initializeData, type Committee, type Member } from "@/lib/data-store";
+import PageSidebar from "@/components/page-sidebar";
+
+const SIDEBAR_LINKS = [
+  { title: "Yoshlar parlamenti tarixi", href: "/yoshlar-parlamenti/tarixi" },
+  { title: "Yoshlar parlamenti Kengashi", href: "/yoshlar-parlamenti/kengashi" },
+  { title: "Yoshlar parlamenti Rahbariyati", href: "/yoshlar-parlamenti/rahbariyati" },
+  { title: "Yoshlar parlamenti a'zolari", href: "/yoshlar-parlamenti-azolari" },
+  { title: "Yoshlar parlamenti Qo'mitalari", href: "/yoshlar-parlamenti/qomitalar" },
+  { title: "Yoshlar guruhlari", href: "/yoshlar-parlamenti/parlamentning-yoshlar-guruxlari" },
+  { title: "Yoshlar parlamenti Nizomi", href: "/yoshlar-parlamenti/nizomi" },
+];
 
 export default function YoshlarParlamentiQomitalar() {
-  const committees = [
-    {
-      id: 1,
-      name: "Ta'lim va fan qo'mitasi",
-      chair: "Dilshod Ahmedov",
-      members: 15,
-      image: "/placeholder.svg?height=200&width=400&text=Ta'lim+va+fan",
-      description:
-        "Ta'lim va fan qo'mitasi ta'lim va fan sohasidagi qonun loyihalarini ishlab chiqish va muhokama qilish, ta'lim va fan sohasidagi muammolarni o'rganish va ularni hal etish bo'yicha takliflar tayyorlash bilan shug'ullanadi.",
-      link: "#",
-    },
-    {
-      id: 2,
-      name: "Madaniyat va sport qo'mitasi",
-      chair: "Nilufar Karimova",
-      members: 12,
-      image: "/placeholder.svg?height=200&width=400&text=Madaniyat+va+sport",
-      description:
-        "Madaniyat va sport qo'mitasi madaniyat va sport sohasidagi qonun loyihalarini ishlab chiqish va muhokama qilish, madaniyat va sport sohasidagi muammolarni o'rganish va ularni hal etish bo'yicha takliflar tayyorlash bilan shug'ullanadi.",
-      link: "#",
-    },
-    {
-      id: 3,
-      name: "Innovatsion rivojlanish qo'mitasi",
-      chair: "Jahongir Rasulov",
-      members: 14,
-      image:
-        "/placeholder.svg?height=200&width=400&text=Innovatsion+rivojlanish",
-      description:
-        "Innovatsion rivojlanish qo'mitasi innovatsion rivojlanish sohasidagi qonun loyihalarini ishlab chiqish va muhokama qilish, innovatsion rivojlanish sohasidagi muammolarni o'rganish va ularni hal etish bo'yicha takliflar tayyorlash bilan shug'ullanadi.",
-      link: "#",
-    },
-    {
-      id: 4,
-      name: "Ijtimoiy masalalar qo'mitasi",
-      chair: "Zarina Umarova",
-      members: 13,
-      image: "/placeholder.svg?height=200&width=400&text=Ijtimoiy+masalalar",
-      description:
-        "Ijtimoiy masalalar qo'mitasi ijtimoiy masalalar sohasidagi qonun loyihalarini ishlab chiqish va muhokama qilish, ijtimoiy masalalar sohasidagi muammolarni o'rganish va ularni hal etish bo'yicha takliflar tayyorlash bilan shug'ullanadi.",
-      link: "#",
-    },
-  ];
+  const [committees, setCommittees] = useState<Committee[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [selected, setSelected] = useState<Committee | null>(null);
+
+  useEffect(() => {
+    initializeData();
+    const c = getCommittees();
+    setCommittees(c);
+    setMembers(getMembers());
+    if (c.length > 0) setSelected(c[0]);
+  }, []);
+
+  const committeeMembers = selected
+    ? members.filter(m => m.committee === selected.name)
+    : [];
 
   return (
     <main className="min-h-screen bg-gray-50 pb-16">
-      {/* Page Header */}
-      <section className="bg-[#0047AB] text-white py-12">
+      <section className="bg-[#0047AB] text-white py-10">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-4">
-            Yoshlar parlamenti Qo'mitalar
-          </h1>
-          <p className="text-lg max-w-3xl">
-            O'zbekiston Respublikasi Yoshlar parlamenti qo'mitalari haqida
-            ma'lumot
-          </p>
+          <h1 className="text-2xl font-bold mb-1">Yoshlar parlamenti Qo'mitalari</h1>
+          <p className="text-sm text-white/80">O'zbekiston Respublikasi Yoshlar parlamenti qo'mitalari haqida ma'lumot</p>
         </div>
       </section>
 
-      {/* Content Section */}
-      <section className="container mx-auto flex lg:flex-row flex-col lg:justify-evenly lg:gap-0 gap-4 px-4 py-8">
-        <div className="flex lg:flex-row flex-col-reverse">
-          <LeftSidebar elements={committees} title="Qo'mitalar" />
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-5 lg:mb-0 mx-0 lg:mx-6 max-w-3xl">
-            <h2 className="text-2xl font-bold mb-4">
-              Yoshlar parlamenti qo'mitalari haqida
-            </h2>
-            <p className="text-gray-700 mb-4">
-              O'zbekiston Respublikasi Yoshlar parlamenti qo'mitalari Yoshlar
-              parlamentining asosiy ishchi organlari hisoblanadi. Qo'mitalar o'z
-              yo'nalishlari bo'yicha qonun loyihalarini ishlab chiqish va
-              muhokama qilish, tegishli sohalardagi muammolarni o'rganish va
-              ularni hal etish bo'yicha takliflar tayyorlash bilan
-              shug'ullanadi.
-            </p>
-            <p className="text-gray-700">
-              Yoshlar parlamenti qo'mitalari Yoshlar parlamenti a'zolari
-              tomonidan tashkil etiladi va ular oldida hisobot beradi.
-              Qo'mitalar o'z faoliyatini Yoshlar parlamenti Kengashi
-              rahbarligida amalga oshiradi.
-            </p>
-          </div>
-        </div>
+      <section className="container mx-auto px-4 py-8">
+        <div className="flex flex-col lg:flex-row gap-6">
 
-        <RightSidebar />
-
-        {/* <h2 className="text-2xl font-bold mb-6">Qo'mitalar</h2>
-        <div className="space-y-8">
-          {committees.map((committee) => (
-            <div key={committee.id} className="bg-white rounded-lg shadow-sm overflow-hidden">
-              <div className="md:flex">
-                <div className="md:w-1/3">
-                  <div className="relative h-[200px] w-full">
-                    <Image
-                      src={committee.image || "/placeholder.svg"}
-                      alt={committee.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                </div>
-                <div className="md:w-2/3 p-6">
-                  <h3 className="text-2xl font-bold mb-2">{committee.name}</h3>
-                  <div className="flex flex-wrap gap-4 mb-4">
-                    <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                      Rais: {committee.chair}
-                    </div>
-                    <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                      A'zolar soni: {committee.members}
-                    </div>
-                  </div>
-                  <p className="text-gray-700">{committee.description}</p>
-                </div>
+          {/* Left: Committee list */}
+          <div className="w-full lg:w-56 flex-shrink-0">
+            <div className="bg-[#0047AB] text-white rounded-sm overflow-hidden">
+              <div className="px-4 py-3 border-b border-blue-500">
+                <h2 className="font-bold text-sm">Qo'mitalar</h2>
               </div>
+              <ul className="divide-y divide-blue-500/40">
+                {committees.map(c => (
+                  <li key={c.id}>
+                    <button
+                      onClick={() => setSelected(c)}
+                      className={`w-full text-left px-4 py-2.5 text-sm transition hover:bg-blue-700 leading-snug ${
+                        selected?.id === c.id ? "bg-blue-700 font-medium" : ""
+                      }`}
+                    >
+                      {c.name}
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
-          ))}
-        </div> */}
+          </div>
+
+          {/* Center: Selected committee content */}
+          <div className="flex-1 min-w-0">
+            {selected ? (
+              <>
+                <div className="bg-white border border-gray-200 rounded-sm p-5 mb-5">
+                  <h2 className="text-xl font-bold mb-3 text-[#0047AB]">{selected.name}</h2>
+                  <div className="flex flex-wrap gap-3 mb-4">
+                    <span className="bg-blue-50 text-[#0047AB] border border-blue-200 px-3 py-1 rounded text-sm font-medium">
+                      Rais: {selected.chair}
+                    </span>
+                    {selected.membersCount && (
+                      <span className="bg-gray-50 text-gray-700 border border-gray-200 px-3 py-1 rounded text-sm flex items-center gap-1">
+                        <Users className="h-3.5 w-3.5" /> {selected.membersCount} nafar a'zo
+                      </span>
+                    )}
+                  </div>
+                  {selected.description && (
+                    <p className="text-gray-700 text-sm leading-relaxed mb-4">{selected.description}</p>
+                  )}
+                  <div className="text-sm text-gray-600 space-y-1 border-t border-gray-100 pt-4">
+                    <p><strong>Qo'mita vazifalari:</strong></p>
+                    <ul className="list-disc ml-4 space-y-1 text-gray-600 text-sm">
+                      <li>Qonun loyihalarini ishlab chiqish va muhokama qilish;</li>
+                      <li>Tegishli sohadagi muammolarni o'rganish va takliflar tayyorlash;</li>
+                      <li>Parlament majlislarida qo'mita xulosalarini taqdim etish;</li>
+                      <li>Vazirliklar va idoralar bilan hamkorlik qilish.</li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Committee members */}
+                <div>
+                  <h3 className="text-base font-bold mb-3 flex items-center gap-2">
+                    <Users className="h-4 w-4 text-[#0047AB]" />
+                    Qo'mita a'zolari
+                    {committeeMembers.length > 0 && (
+                      <span className="text-xs font-normal text-gray-500">({committeeMembers.length} nafar)</span>
+                    )}
+                  </h3>
+                  {committeeMembers.length === 0 ? (
+                    <div className="bg-white border border-dashed border-gray-300 rounded-sm p-8 text-center text-gray-400 text-sm">
+                      Bu qo'mita uchun a'zolar biriktirilmagan.
+                      <br />
+                      <span className="text-xs mt-1 block">Admin paneldan a'zo profilida qo'mita tanlang.</span>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+                      {committeeMembers.map(m => (
+                        <Link
+                          key={m.id}
+                          href={`/yoshlar-parlamenti-azolari/${m.id}`}
+                          className="bg-white border border-gray-200 rounded-sm flex overflow-hidden h-28 hover:border-[#0047AB] transition"
+                        >
+                          <div className="relative w-24 flex-shrink-0">
+                            <Image src={m.image || "/placeholder.svg"} alt={m.name} fill className="object-cover object-top" />
+                          </div>
+                          <div className="p-2.5 flex flex-col justify-center gap-1 min-w-0">
+                            <p className="text-xs font-bold text-gray-800 line-clamp-2 leading-snug">{m.name}</p>
+                            <p className="text-[10px] text-[#0047AB]">{m.fraction}</p>
+                            <p className="text-[10px] text-gray-500 line-clamp-1">{m.region}</p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="bg-white border border-gray-200 rounded-sm p-10 text-center text-gray-500 text-sm">
+                Qo'mitani tanlang
+              </div>
+            )}
+          </div>
+
+          {/* Right: Sidebar */}
+          <PageSidebar links={SIDEBAR_LINKS} />
+        </div>
       </section>
     </main>
   );

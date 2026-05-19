@@ -5,6 +5,8 @@ import "./globals.css"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import VisitorTracker from "@/components/visitor-tracker"
+import { ThemeProvider } from "@/components/theme-provider"
+import { LangProvider } from "@/lib/lang-context"
 
 const inter = Inter({ subsets: ["latin", "cyrillic"] })
 
@@ -21,12 +23,16 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="uz">
+    <html lang="uz" suppressHydrationWarning>
       <body className={inter.className}>
-        <VisitorTracker />
-        <Header />
-        {children}
-        <Footer />
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="yp_theme">
+          <LangProvider>
+            <VisitorTracker />
+            <Header />
+            {children}
+            <Footer />
+          </LangProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
