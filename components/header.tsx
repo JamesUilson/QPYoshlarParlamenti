@@ -25,6 +25,8 @@ const Header = () => {
   const [mounted, setMounted] = useState(false);
   const accessRef = useRef<HTMLDivElement>(null);
   const langRef = useRef<HTMLDivElement>(null);
+  const accessMobileRef = useRef<HTMLDivElement>(null);
+  const langMobileRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -34,8 +36,25 @@ const Header = () => {
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (accessRef.current && !accessRef.current.contains(e.target as Node)) setShowAccessibility(false);
-      if (langRef.current && !langRef.current.contains(e.target as Node)) setShowLang(false);
+      const target = e.target as Node;
+      
+      // Close accessibility only if click is outside both desktop and mobile triggers
+      const clickedOutsideAccess = 
+        (!accessRef.current || !accessRef.current.contains(target)) &&
+        (!accessMobileRef.current || !accessMobileRef.current.contains(target));
+        
+      if (clickedOutsideAccess) {
+        setShowAccessibility(false);
+      }
+
+      // Close language only if click is outside both desktop and mobile triggers
+      const clickedOutsideLang = 
+        (!langRef.current || !langRef.current.contains(target)) &&
+        (!langMobileRef.current || !langMobileRef.current.contains(target));
+        
+      if (clickedOutsideLang) {
+        setShowLang(false);
+      }
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
@@ -188,7 +207,7 @@ const Header = () => {
               </div>
 
               {/* Kirish */}
-              <Link href="/admin/login" className="flex items-center gap-1 px-3 py-1.5 text-xs text-gray-600 hover:text-[#0047AB] transition">
+              <Link href="/hjtl232jhand/login" className="flex items-center gap-1 px-3 py-1.5 text-xs text-gray-600 hover:text-[#0047AB] transition">
                 <User className="h-3.5 w-3.5" /> {tr("kirish")}
               </Link>
             </div>
@@ -197,7 +216,7 @@ const Header = () => {
             <div className="flex md:hidden items-center gap-1.5 flex-shrink-0">
 
               {/* Accessibility */}
-              <div className="relative" ref={accessRef}>
+              <div className="relative" ref={accessMobileRef}>
                 <button
                   onClick={() => { setShowAccessibility(v => !v); setShowLang(false); }}
                   className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 hover:border-[#0047AB] hover:text-[#0047AB] transition text-gray-600"
@@ -244,7 +263,7 @@ const Header = () => {
               </div>
 
               {/* Language */}
-              <div className="relative" ref={langRef}>
+              <div className="relative" ref={langMobileRef}>
                 <button
                   onClick={() => { setShowLang(v => !v); setShowAccessibility(false); }}
                   className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 text-gray-600 hover:border-[#0047AB] hover:text-[#0047AB] transition"
@@ -363,7 +382,7 @@ const Header = () => {
               className="block py-3 text-sm font-bold text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-800 hover:text-[#0047AB]">{tr("mediateka")}</Link>
             <a href="https://t.me/yoshlar_qp_murojaat_bot" target="_blank" rel="noopener noreferrer"
               className="block py-3 text-sm font-bold text-[#0047AB] hover:underline">{tr("virtual-qabulxona")}</a>
-            <Link href="/admin/login" onClick={() => setIsMobileMenuOpen(false)}
+            <Link href="/hjtl232jhand/login" onClick={() => setIsMobileMenuOpen(false)}
               className="block text-center mt-6 px-4 py-2.5 text-sm font-semibold text-white bg-[#0047AB] hover:bg-blue-700 rounded-lg shadow-sm transition">{tr("kirish")}</Link>
           </div>
         </div>

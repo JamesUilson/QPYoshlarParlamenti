@@ -27,15 +27,15 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     // Check if user is logged in
-    if (!isAdminLoggedIn() && pathname !== "/admin/login") {
-      router.push("/admin/login");
+    if (!isAdminLoggedIn() && pathname !== "/hjtl232jhand/login") {
+      router.push("/hjtl232jhand/login");
     }
     setIsLoading(false);
   }, [pathname, router]);
 
   const handleLogout = () => {
     logoutAdmin();
-    router.push("/admin/login");
+    router.push("/hjtl232jhand/login");
   };
 
   if (isLoading) {
@@ -47,23 +47,23 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   }
 
   // Don't show sidebar on login page
-  if (pathname === "/admin/login") {
+  if (pathname === "/hjtl232jhand/login") {
     return <>{children}</>;
   }
 
   const menuItems = [
-    { href: "/admin", icon: LayoutDashboard, label: "Bosh sahifa" },
-    { href: "/admin/news", icon: Newspaper, label: "Yangiliklar" },
-    { href: "/admin/events", icon: Calendar, label: "Tadbirlar" },
-    { href: "/admin/members", icon: Users, label: "A'zolar" },
-    { href: "/admin/kengash", icon: Users, label: "Kengash tarkibi" },
-    { href: "/admin/rahbariyat", icon: Users, label: "Rahbariyat" },
-    { href: "/admin/committees", icon: Users, label: "Qo'mitalar" },
-    { href: "/admin/yoshlar-guruhlari", icon: Users, label: "Yoshlar guruhlari" },
-    { href: "/admin/districts", icon: LayoutDashboard, label: "Saylov okruglari" },
-    { href: "/admin/friendship-groups", icon: Globe, label: "Do'stlik guruhlar" },
-    { href: "/admin/articles", icon: FileText, label: "Maqolalar" },
-    { href: "/admin/media", icon: ImageIcon, label: "Mediateka" },
+    { href: "/hjtl232jhand", icon: LayoutDashboard, label: "Bosh sahifa" },
+    { href: "/hjtl232jhand/news", icon: Newspaper, label: "Yangiliklar" },
+    { href: "/hjtl232jhand/events", icon: Calendar, label: "Tadbirlar" },
+    { href: "/hjtl232jhand/members", icon: Users, label: "A'zolar" },
+    { href: "/hjtl232jhand/kengash", icon: Users, label: "Kengash tarkibi" },
+    { href: "/hjtl232jhand/rahbariyat", icon: Users, label: "Rahbariyat" },
+    { href: "/hjtl232jhand/committees", icon: Users, label: "Qo'mitalar" },
+    { href: "/hjtl232jhand/yoshlar-guruhlari", icon: Users, label: "Yoshlar guruhlari" },
+    { href: "/hjtl232jhand/districts", icon: LayoutDashboard, label: "Saylov okruglari" },
+    { href: "/hjtl232jhand/friendship-groups", icon: Globe, label: "Do'stlik guruhlar" },
+    { href: "/hjtl232jhand/articles", icon: FileText, label: "Maqolalar" },
+    { href: "/hjtl232jhand/media", icon: ImageIcon, label: "Mediateka" },
   ];
 
   return (
@@ -87,7 +87,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
               key={item.href}
               href={item.href}
               className={`flex items-center px-4 py-3 hover:bg-blue-700 ${
-                (pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href))) ? "bg-blue-700" : ""
+                (pathname === item.href || (item.href !== "/hjtl232jhand" && pathname.startsWith(item.href))) ? "bg-blue-700" : ""
               }`}
               onClick={() => setIsMobileMenuOpen(false)}
             >
@@ -121,7 +121,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
                 key={item.href}
                 href={item.href}
                 className={`flex items-center px-4 py-3 hover:bg-blue-700 transition ${
-                  (pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href))) ? "bg-blue-700" : ""
+                  (pathname === item.href || (item.href !== "/hjtl232jhand" && pathname.startsWith(item.href))) ? "bg-blue-700" : ""
                 }`}
               >
                 <item.icon size={20} className="mr-3" />

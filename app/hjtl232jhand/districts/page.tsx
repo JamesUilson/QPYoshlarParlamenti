@@ -66,7 +66,7 @@ export default function AdminDistrictsPage() {
           <Input
             placeholder="Okrug nomi yoki viloyat bo'yicha qidirish..."
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
             className="pl-10"
           />
         </div>
@@ -135,7 +135,7 @@ export default function AdminDistrictsPage() {
       </div>
 
       {/* Edit Dialog */}
-      <Dialog open={!!editing} onOpenChange={open => { if (!open) setEditing(null); }}>
+      <Dialog open={!!editing} onOpenChange={(open: boolean) => { if (!open) setEditing(null); }}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editing?.name}</DialogTitle>
@@ -148,7 +148,7 @@ export default function AdminDistrictsPage() {
               <Label>Tumanlar (vergul bilan ajrating)</Label>
               <Textarea
                 value={formData.districts}
-                onChange={e => setFormData(f => ({ ...f, districts: e.target.value }))}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData(f => ({ ...f, districts: e.target.value }))}
                 rows={3}
                 placeholder="Beruniy tumani, Nukus shahri, Amudaryo tumani"
                 className="text-sm"
@@ -158,7 +158,7 @@ export default function AdminDistrictsPage() {
               <Label>Mahallalar (vergul bilan ajrating)</Label>
               <Textarea
                 value={formData.mahallas}
-                onChange={e => setFormData(f => ({ ...f, mahallas: e.target.value }))}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormData(f => ({ ...f, mahallas: e.target.value }))}
                 rows={10}
                 placeholder="Abay OFY, Amir Temur MFY, Beruniy OFY, ..."
                 className="text-sm font-mono"

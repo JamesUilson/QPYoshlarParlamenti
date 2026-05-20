@@ -9,7 +9,7 @@ export default function VisitorTracker() {
 
   useEffect(() => {
     // Don't track admin pages
-    if (!pathname.startsWith("/admin")) {
+    if (!pathname.startsWith("/hjtl232jhand")) {
       trackVisit(pathname);
     }
   }, [pathname]);

@@ -34,7 +34,7 @@ const LoginPage = () => {
 
       if (response.ok && data.success) {
         setAdminLoggedIn();
-        router.push("/admin");
+        router.push("/hjtl232jhand");
       } else {
         setError(data.error || "Noto'g'ri parol. Iltimos, qayta urinib ko'ring.");
         setIsLoading(false);
