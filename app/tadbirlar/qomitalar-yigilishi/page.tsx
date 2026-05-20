@@ -6,15 +6,16 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getEvents, initializeData, type EventItem } from "@/lib/data-store";
 import PageSidebar from "@/components/page-sidebar";
-
-const sidebarLinks = [
-  { title: "Yalpi majlislar", href: "/tadbirlar/yalpi-majlislar" },
-  { title: "Siyosiy partiyalar yig'ilishlari", href: "/tadbirlar/siyosiy-partiyalar" },
-  { title: "Qo'mitalar yig'ilishi", href: "/tadbirlar/qomitalar-yigilishi" },
-  { title: "Boshqa tadbirlar", href: "/tadbirlar/boshqa" },
-];
+import { useLang } from "@/lib/lang-context";
 
 export default function QomitalarYigilishi() {
+  const { tr } = useLang();
+  const sidebarLinks = [
+    { title: tr("yalpi-majlislar"), href: "/tadbirlar/yalpi-majlislar" },
+    { title: tr("siyosiy-partiyalar"), href: "/tadbirlar/siyosiy-partiyalar" },
+    { title: tr("qomitalar-yigilishi"), href: "/tadbirlar/qomitalar-yigilishi" },
+    { title: tr("boshqa-tadbirlar"), href: "/tadbirlar/boshqa" },
+  ];
   const [events, setEvents] = useState<EventItem[]>([]);
 
   useEffect(() => {
@@ -27,10 +28,8 @@ export default function QomitalarYigilishi() {
     <main className="min-h-screen bg-gray-50 pb-16">
       <section className="bg-[#0047AB] text-white py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-4">Qo'mitalar yig'ilishi</h1>
-          <p className="text-lg max-w-3xl">
-            O'zbekiston Respublikasi Yoshlar parlamenti qo'mitalari yig'ilishlari haqida ma'lumot
-          </p>
+          <h1 className="text-3xl font-bold mb-4">{tr("qomita-yig-title")}</h1>
+          <p className="text-lg max-w-3xl">{tr("qomita-yig-desc")}</p>
         </div>
       </section>
 

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { loginAdmin } from "@/lib/data-store";
+import { setAdminLoggedIn } from "@/lib/data-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,19 +16,33 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
 
-    setTimeout(() => {
-      if (loginAdmin(password)) {
+    try {
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setAdminLoggedIn();
         router.push("/admin");
       } else {
-        setError("Noto'g'ri parol. Iltimos, qayta urinib ko'ring.");
+        setError(data.error || "Noto'g'ri parol. Iltimos, qayta urinib ko'ring.");
         setIsLoading(false);
       }
-    }, 500);
+    } catch (err) {
+      setError("Server bilan bog'lanishda xatolik yuz berdi.");
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -71,7 +85,7 @@ const LoginPage = () => {
             </Button>
           </form>
           <p className="text-center text-sm text-gray-500 mt-4">
-            Standart parol: yoshlar2025
+            Kirish huquqi faqat Yoshlar parlamenti raisi va u ruxsat bergan foydalanuvchilar uchun!
           </p>
         </CardContent>
       </Card>

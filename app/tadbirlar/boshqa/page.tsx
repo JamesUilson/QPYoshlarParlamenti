@@ -6,15 +6,16 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getEvents, initializeData, type EventItem } from "@/lib/data-store";
 import PageSidebar from "@/components/page-sidebar";
-
-const sidebarLinks = [
-  { title: "Yalpi majlislar", href: "/tadbirlar/yalpi-majlislar" },
-  { title: "Siyosiy partiyalar yig'ilishlari", href: "/tadbirlar/siyosiy-partiyalar" },
-  { title: "Qo'mitalar yig'ilishi", href: "/tadbirlar/qomitalar-yigilishi" },
-  { title: "Boshqa tadbirlar", href: "/tadbirlar/boshqa" },
-];
+import { useLang } from "@/lib/lang-context";
 
 export default function BoshqaTadbirlar() {
+  const { tr } = useLang();
+  const sidebarLinks = [
+    { title: tr("yalpi-majlislar"), href: "/tadbirlar/yalpi-majlislar" },
+    { title: tr("siyosiy-partiyalar"), href: "/tadbirlar/siyosiy-partiyalar" },
+    { title: tr("qomitalar-yigilishi"), href: "/tadbirlar/qomitalar-yigilishi" },
+    { title: tr("boshqa-tadbirlar"), href: "/tadbirlar/boshqa" },
+  ];
   const [events, setEvents] = useState<EventItem[]>([]);
 
   useEffect(() => {
@@ -27,10 +28,8 @@ export default function BoshqaTadbirlar() {
     <main className="min-h-screen bg-gray-50 pb-16">
       <section className="bg-[#0047AB] text-white py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-4">Boshqa tadbirlar</h1>
-          <p className="text-lg max-w-3xl">
-            O'zbekiston Respublikasi Yoshlar parlamenti tomonidan tashkil etiladigan boshqa tadbirlar haqida ma'lumot
-          </p>
+          <h1 className="text-3xl font-bold mb-4">{tr("boshqa-title")}</h1>
+          <p className="text-lg max-w-3xl">{tr("boshqa-desc")}</p>
         </div>
       </section>
 
@@ -39,7 +38,7 @@ export default function BoshqaTadbirlar() {
           <div className="flex-1 min-w-0">
             {events.length === 0 ? (
               <div className="text-center py-12 text-gray-500 bg-white rounded-lg border">
-                <p className="text-lg">Hozircha boshqa tadbirlar mavjud emas</p>
+                <p className="text-lg">{tr("hozircha-yoq")}</p>
               </div>
             ) : (
               <div className="space-y-6">
@@ -57,7 +56,7 @@ export default function BoshqaTadbirlar() {
                           {event.location && <div className="flex items-center gap-1"><MapPin className="h-4 w-4" /><span>{event.location}</span></div>}
                         </div>
                         <p className="text-gray-700 mb-4 line-clamp-3">{event.description}</p>
-                        <Link href={`/tadbirlar/${event.id}`} className="inline-block bg-[#0047AB] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition">Batafsil</Link>
+                        <Link href={`/tadbirlar/${event.id}`} className="inline-block bg-[#0047AB] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition">{tr("batafsil")}</Link>
                       </div>
                     </div>
                   </div>

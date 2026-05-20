@@ -1,8 +1,12 @@
+"use client";
+
 import Image from "next/image"
 import Link from "next/link"
 import { Calendar, ChevronRight } from "lucide-react"
+import { useLang } from "@/lib/lang-context"
 
 export default function Munosabatlar() {
+  const { tr } = useLang();
   const relations = [
     {
       id: 1,
@@ -71,8 +75,8 @@ export default function Munosabatlar() {
       {/* Page Header */}
       <section className="bg-[#0047AB] text-white py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-4">Munosabatlar</h1>
-          <p className="text-lg max-w-3xl">O'zbekiston Respublikasi Yoshlar parlamenti a'zolarining munosabatlari</p>
+          <h1 className="text-3xl font-bold mb-4">{tr("munosabat-page-title")}</h1>
+          <p className="text-lg max-w-3xl">{tr("munosabat-page-desc")}</p>
         </div>
       </section>
 
@@ -104,7 +108,7 @@ export default function Munosabatlar() {
                   href={`/munosabatlar/${relation.id}`}
                   className="text-blue-600 hover:underline flex items-center text-sm font-medium"
                 >
-                  Batafsil o'qish <ChevronRight className="h-4 w-4 ml-1" />
+                  {tr("batafsil-oqish")} <ChevronRight className="h-4 w-4 ml-1" />
                 </Link>
               </div>
             </div>
@@ -113,11 +117,11 @@ export default function Munosabatlar() {
 
         <div className="flex justify-center mt-8">
           <nav className="flex items-center">
-            <button className="px-3 py-1 border border-gray-300 rounded-l-md hover:bg-gray-100">&laquo; Oldingi</button>
+            <button className="px-3 py-1 border border-gray-300 rounded-l-md hover:bg-gray-100">&laquo; {tr("oldingi")}</button>
             <button className="px-3 py-1 border-t border-b border-gray-300 bg-blue-600 text-white">1</button>
             <button className="px-3 py-1 border-t border-b border-gray-300 hover:bg-gray-100">2</button>
             <button className="px-3 py-1 border-t border-b border-gray-300 hover:bg-gray-100">3</button>
-            <button className="px-3 py-1 border border-gray-300 rounded-r-md hover:bg-gray-100">Keyingi &raquo;</button>
+            <button className="px-3 py-1 border border-gray-300 rounded-r-md hover:bg-gray-100">{tr("keyingi")} &raquo;</button>
           </nav>
         </div>
       </section>

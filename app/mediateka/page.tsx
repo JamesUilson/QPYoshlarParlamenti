@@ -5,8 +5,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getMedia, initializeData, type MediaItem } from "@/lib/data-store";
+import { useLang } from "@/lib/lang-context";
 
 export default function Mediateka() {
+  const { tr } = useLang();
   const [media, setMedia] = useState<MediaItem[]>([]);
 
   useEffect(() => {
@@ -22,11 +24,8 @@ export default function Mediateka() {
       {/* Page Header */}
       <section className="bg-[#0047AB] text-white py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-4">Mediateka</h1>
-          <p className="text-lg max-w-3xl">
-            O'zbekiston Respublikasi Yoshlar parlamenti faoliyati bilan bog'liq
-            foto va video materiallar
-          </p>
+          <h1 className="text-3xl font-bold mb-4">{tr("media-page-title")}</h1>
+          <p className="text-lg max-w-3xl">{tr("media-page-desc")}</p>
         </div>
       </section>
 
@@ -34,8 +33,8 @@ export default function Mediateka() {
       <section className="container mx-auto px-4 py-8">
         <Tabs defaultValue="photos" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-8">
-            <TabsTrigger value="photos">Fotogalereya</TabsTrigger>
-            <TabsTrigger value="videos">Videogalereya</TabsTrigger>
+            <TabsTrigger value="photos">{tr("fotogalereya")}</TabsTrigger>
+            <TabsTrigger value="videos">{tr("videogalereya")}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="photos">

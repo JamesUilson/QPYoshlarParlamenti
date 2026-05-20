@@ -6,13 +6,14 @@ import { Globe, Users, Calendar } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getFriendshipGroups, initializeData, type FriendshipGroup } from "@/lib/data-store";
 import PageSidebar from "@/components/page-sidebar";
-
-const sidebarLinks = [
-  { title: "Xalqaro tadbirlar", href: "/xalqaro-munosabatlar/xalqaro-tadbirlar" },
-  { title: "Do'stlik guruhlar", href: "/xalqaro-munosabatlar/dostlik-guruhlar" },
-];
+import { useLang } from "@/lib/lang-context";
 
 export default function DostlikGuruhlar() {
+  const { tr } = useLang();
+  const sidebarLinks = [
+    { title: tr("xalqaro-tadbirlar"), href: "/xalqaro-munosabatlar/xalqaro-tadbirlar" },
+    { title: tr("dostlik-guruhlar"), href: "/xalqaro-munosabatlar/dostlik-guruhlar" },
+  ];
   const [groups, setGroups] = useState<FriendshipGroup[]>([]);
 
   useEffect(() => {
@@ -24,10 +25,8 @@ export default function DostlikGuruhlar() {
     <main className="min-h-screen bg-gray-50 pb-16">
       <section className="bg-[#0047AB] text-white py-10">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-2">Do'stlik guruhlar</h1>
-          <p className="text-blue-100 max-w-3xl">
-            O'zbekiston Respublikasi Yoshlar parlamenti do'stlik guruhlari haqida ma'lumot
-          </p>
+          <h1 className="text-3xl font-bold mb-2">{tr("dostlik-page-title")}</h1>
+          <p className="text-blue-100 max-w-3xl">{tr("dostlik-page-desc")}</p>
         </div>
       </section>
 
@@ -37,8 +36,7 @@ export default function DostlikGuruhlar() {
           <div className="flex-1 min-w-0">
             {groups.length === 0 ? (
               <div className="text-center py-16 text-gray-500 bg-white rounded-lg border">
-                <p className="text-lg font-medium">Hozircha do'stlik guruhlar mavjud emas.</p>
-                <p className="text-sm mt-2">Admin panel orqali do'stlik guruh qo'shing.</p>
+                <p className="text-lg font-medium">{tr("hozircha-yoq")}</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

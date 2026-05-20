@@ -6,10 +6,16 @@ import { ALL_DISTRICTS } from "./districts-data";
 export interface NewsItem {
   id: string;
   title: string;
+  title_oz?: string;
+  title_ru?: string;
+  title_en?: string;
   date: string;
   time: string;
   image: string;
   description: string;
+  description_oz?: string;
+  description_ru?: string;
+  description_en?: string;
   location: string;
   category: string;
 }
@@ -17,9 +23,15 @@ export interface NewsItem {
 export interface EventItem {
   id: string;
   title: string;
+  title_oz?: string;
+  title_ru?: string;
+  title_en?: string;
   date: string;
   time: string;
   description: string;
+  description_oz?: string;
+  description_ru?: string;
+  description_en?: string;
   location?: string;
   category: string;
   image?: string;
@@ -49,8 +61,14 @@ export interface Member {
 export interface Committee {
   id: string;
   name: string;
+  name_oz?: string;
+  name_ru?: string;
+  name_en?: string;
   chair: string;
   description?: string;
+  description_oz?: string;
+  description_ru?: string;
+  description_en?: string;
   image?: string;
   membersCount?: number;
 }
@@ -58,11 +76,17 @@ export interface Committee {
 export interface Article {
   id: string;
   title: string;
+  title_oz?: string;
+  title_ru?: string;
+  title_en?: string;
   date: string;
   author: string;
   position: string;
   image: string;
   description: string;
+  description_oz?: string;
+  description_ru?: string;
+  description_en?: string;
   fileUrl?: string;
   fileName?: string;
 }
@@ -80,16 +104,28 @@ export interface KengashMember {
   id: string;
   name: string;
   position: string;
+  position_oz?: string;
+  position_ru?: string;
+  position_en?: string;
   image?: string;
   description?: string;
+  description_oz?: string;
+  description_ru?: string;
+  description_en?: string;
 }
 
 export interface RahbariyatMember {
   id: string;
   name: string;
   position: string;
+  position_oz?: string;
+  position_ru?: string;
+  position_en?: string;
   image?: string;
   description?: string;
+  description_oz?: string;
+  description_ru?: string;
+  description_en?: string;
   detailId?: string;
 }
 
@@ -110,7 +146,24 @@ export interface FriendshipGroup {
   chair: string;
   image?: string;
   description: string;
+  description_oz?: string;
+  description_ru?: string;
+  description_en?: string;
   established?: string;
+}
+
+export interface YoshlarGuruhi {
+  id: string;
+  key: string;
+  name: string;
+  name_oz?: string;
+  name_ru?: string;
+  name_en?: string;
+  image: string;
+  description?: string;
+  description_oz?: string;
+  description_ru?: string;
+  description_en?: string;
 }
 
 // Storage keys
@@ -126,6 +179,7 @@ const STORAGE_KEYS = {
   COMMITTEES: "yp_committees",
   DISTRICTS: "yp_districts",
   FRIENDSHIP_GROUPS: "yp_friendship_groups",
+  YOSHLAR_GURUHLARI: "yp_yoshlar_guruhlari",
 };
 
 // Compress base64 image: resize to max 800px wide, quality 0.6
@@ -453,6 +507,18 @@ export const deleteCommittee = (id: string): boolean => {
   return true;
 };
 
+// YoshlarGuruhi functions
+export const getYoshlarGuruhlari = (): YoshlarGuruhi[] => safeStorage.get(STORAGE_KEYS.YOSHLAR_GURUHLARI, []);
+
+export const updateYoshlarGuruhi = (id: string, updates: Partial<YoshlarGuruhi>): YoshlarGuruhi | null => {
+  const list = getYoshlarGuruhlari();
+  const idx = list.findIndex(x => x.id === id);
+  if (idx === -1) return null;
+  list[idx] = { ...list[idx], ...updates };
+  safeStorage.set(STORAGE_KEYS.YOSHLAR_GURUHLARI, list);
+  return list[idx];
+};
+
 // Friendship Group functions
 export const getFriendshipGroups = (): FriendshipGroup[] => safeStorage.get(STORAGE_KEYS.FRIENDSHIP_GROUPS, []);
 
@@ -521,18 +587,12 @@ export const deleteDistrict = (id: string): boolean => {
   return true;
 };
 
-// Admin authentication (simple password-based)
-const ADMIN_PASSWORD = "yoshlar2025"; // Default password
-
-export const loginAdmin = (password: string): boolean => {
-  if (password === ADMIN_PASSWORD) {
-    safeStorage.set(STORAGE_KEYS.ADMIN_AUTH, { 
-      isLoggedIn: true, 
-      timestamp: Date.now() 
-    });
-    return true;
-  }
-  return false;
+// Admin session helper (password is validated server-side via API route)
+export const setAdminLoggedIn = (): void => {
+  safeStorage.set(STORAGE_KEYS.ADMIN_AUTH, { 
+    isLoggedIn: true, 
+    timestamp: Date.now() 
+  });
 };
 
 export const logoutAdmin = (): void => {
@@ -743,19 +803,72 @@ export const initializeData = () => {
     sampleArticles.forEach(article => addArticle(article));
   }
 
-  if (getCommittees().length === 0) {
-    const committeeData: Omit<Committee, "id">[] = [
-      { name: "Ta'lim, fan va yoshlar siyosati qo'mitasi", chair: "Xolmo'minov Sherzod", description: "Ta'lim, fan va yoshlar siyosati sohasidagi qonun loyihalarini ishlab chiqish va muhokama qilish bilan shug'ullanadi.", membersCount: 18 },
-      { name: "Iqtisodiyot va tadbirkorlik qo'mitasi", chair: "Nazarov Bobur", description: "Iqtisodiyot va tadbirkorlik sohasidagi qonun loyihalarini ishlab chiqish va muhokama qilish bilan shug'ullanadi.", membersCount: 15 },
-      { name: "Huquq va tartib-intizom qo'mitasi", chair: "Rahimova Dilnoza", description: "Huquq va tartib-intizom sohasidagi qonun loyihalarini ko'rib chiqadi.", membersCount: 14 },
-      { name: "Ijtimoiy siyosat va sog'liqni saqlash qo'mitasi", chair: "Yusupova Maftuna", description: "Ijtimoiy siyosat va sog'liqni saqlash sohasidagi masalalarni ko'rib chiqadi.", membersCount: 16 },
-      { name: "Madaniyat, sport va turizm qo'mitasi", chair: "Xasanov Jahongir", description: "Madaniyat, sport va turizm sohasidagi qonun loyihalarini muhokama qiladi.", membersCount: 13 },
-      { name: "Atrof-muhit va ekologiya qo'mitasi", chair: "Toshmatova Zulfiya", description: "Atrof-muhit va ekologiya sohasidagi qonunchilikni takomillashtirish bilan shug'ullanadi.", membersCount: 12 },
-      { name: "Tashqi aloqalar va parlament diplomatiyasi qo'mitasi", chair: "Mirzayev Asilbek", description: "Xalqaro hamkorlik va parlament diplomatiyasi masalalarini ko'rib chiqadi.", membersCount: 11 },
-      { name: "Axborot texnologiyalari va innovatsiyalar qo'mitasi", chair: "Qodirov Ulugbek", description: "Axborot texnologiyalari va innovatsiyalar sohasidagi qonunchilikni rivojlantiradi.", membersCount: 14 },
-    ];
-    committeeData.forEach(c => addCommittee(c));
-  }
+  // Always sync committees to the canonical 8, preserving IDs/chair/description
+  const canonicalCommittees = [
+    {
+      name: "Yoshlarning huquqiy savodxonligini oshirish va vatanparvarlik ruhida tarbiyalash masalalari qo'mitasi",
+      name_oz: "Ёшларнинг ҳуқуқий саводхонлигини ошириш ва ватанпарварлик руҳида тарбиялаш масалалари қўмитаси",
+      name_ru: "Комитет по вопросам повышения правовой грамотности молодёжи и воспитания в духе патриотизма",
+      name_en: "Committee on Improving Youth Legal Literacy and Patriotic Education",
+    },
+    {
+      name: "Yoshlar bandligi, sog'liqni saqlash va ijtimoiy masalalar qo'mitasi",
+      name_oz: "Ёшлар бандлиги, соғлиқни сақлаш ва ижтимоий масалалар қўмитаси",
+      name_ru: "Комитет по вопросам занятости молодёжи, здравоохранения и социальным вопросам",
+      name_en: "Committee on Youth Employment, Healthcare and Social Issues",
+    },
+    {
+      name: "Innovatsion rivojlanish, sun'iy intellekt va axborot texnologiyalari masalalari qo'mitasi",
+      name_oz: "Инновацион ривожланиш, сунъий интеллект ва ахборот технологиялари масалалари қўмитаси",
+      name_ru: "Комитет по вопросам инновационного развития, искусственного интеллекта и информационных технологий",
+      name_en: "Committee on Innovative Development, Artificial Intelligence and Information Technologies",
+    },
+    {
+      name: "Yoshlar tadbirkorligi, raqobatni rivojlantirish va sanoat masalalari qo'mitasi",
+      name_oz: "Ёшлар тадбиркорлиги, рақобатни ривожлантириш ва саноат масалалари қўмитаси",
+      name_ru: "Комитет по вопросам молодёжного предпринимательства, развития конкуренции и промышленности",
+      name_en: "Committee on Youth Entrepreneurship, Competition Development and Industry",
+    },
+    {
+      name: "Fan, ta'lim, madaniyat, turizm va sport masalalari qo'mitasi",
+      name_oz: "Фан, таълим, маданият, туризм ва спорт масалалари қўмитаси",
+      name_ru: "Комитет по вопросам науки, образования, культуры, туризма и спорта",
+      name_en: "Committee on Science, Education, Culture, Tourism and Sports",
+    },
+    {
+      name: "Ekologiya va atrof-muhitni muhofaza qilish masalalari qo'mitasi",
+      name_oz: "Экология ва атроф-муҳитни муҳофаза қилиш масалалари қўмитаси",
+      name_ru: "Комитет по вопросам экологии и охраны окружающей среды",
+      name_en: "Committee on Ecology and Environmental Protection",
+    },
+    {
+      name: "Xalqaro ishlar va yoshlar tashkilotlari bilan hamkorlik qilish masalalari qo'mitasi",
+      name_oz: "Халқаро ишлар ва ёшлар ташкилотлари билан ҳамкорлик қилиш масалалари қўмитаси",
+      name_ru: "Комитет по вопросам международных отношений и сотрудничества с молодёжными организациями",
+      name_en: "Committee on International Affairs and Cooperation with Youth Organizations",
+    },
+    {
+      name: "Fuqarolik jamiyati va volontyorlik faoliyatini rivojlantirish masalalari qo'mitasi",
+      name_oz: "Фуқаролик жамияти ва волонтёрлик фаолиятини ривожлантириш масалалари қўмитаси",
+      name_ru: "Комитет по вопросам развития гражданского общества и волонтёрской деятельности",
+      name_en: "Committee on Civil Society Development and Volunteering",
+    },
+  ];
+  const existing = getCommittees();
+  const synced: Committee[] = canonicalCommittees.map((canon, i) => {
+    const prev = existing[i];
+    return {
+      id: prev?.id || generateId(),
+      name: canon.name,
+      name_oz: canon.name_oz,
+      name_ru: canon.name_ru,
+      name_en: canon.name_en,
+      chair: prev?.chair || "",
+      description: prev?.description || "",
+      membersCount: prev?.membersCount || 0,
+    };
+  });
+  safeStorage.set(STORAGE_KEYS.COMMITTEES, synced);
 
   if (getFriendshipGroups().length === 0) {
     const groups: Omit<FriendshipGroup, "id">[] = [
@@ -817,6 +930,73 @@ export const initializeData = () => {
     ];
     sampleMedia.forEach(media => addMedia(media));
   }
+
+  // Always sync yoshlar guruhlari to canonical 5 parties
+  const canonicalGuruhlari: Omit<YoshlarGuruhi, "id">[] = [
+    {
+      key: "ozlidep",
+      name: "Tadbirkorlar va ishbilarmonlar harakati - O'zbekiston Liberal-Demokratik partiyasining yoshlar guruhi",
+      name_oz: "Тадбиркорлар ва ишбиларинларнинг ҳаракати — Ўзбекистон Либерал-Демократик партиясининг ёшлар гуруҳи",
+      name_ru: "Молодёжная группа Движения предпринимателей и деловых людей — Либерально-демократической партии Узбекистана",
+      name_en: "Youth Group of the Movement of Entrepreneurs and Business People — Liberal Democratic Party of Uzbekistan",
+      image: "/images/parties/ozlidep.png",
+      description: "", description_oz: "", description_ru: "", description_en: "",
+    },
+    {
+      key: "milliy",
+      name: "O'zbekiston «Milliy tiklanish» demokratik partiyasining yoshlar guruhi",
+      name_oz: "Ўзбекистон «Миллий тикланиш» демократик партиясининг ёшлар гуруҳи",
+      name_ru: "Молодёжная группа Демократической партии Узбекистана «Миллий тикланиш»",
+      name_en: "Youth Group of the Democratic Party of Uzbekistan 'Milliy Tiklanish'",
+      image: "/images/parties/milliy.png",
+      description: "", description_oz: "", description_ru: "", description_en: "",
+    },
+    {
+      key: "adolat",
+      name: "O'zbekiston «Adolat» sotsial-demokratik partiyasining yoshlar guruhi",
+      name_oz: "Ўзбекистон «Адолат» социал-демократик партиясининг ёшлар гуруҳи",
+      name_ru: "Молодёжная группа Социал-демократической партии Узбекистана «Адолат»",
+      name_en: "Youth Group of the Social Democratic Party of Uzbekistan 'Adolat'",
+      image: "/images/parties/adolat.png",
+      description: "", description_oz: "", description_ru: "", description_en: "",
+    },
+    {
+      key: "xdp",
+      name: "O'zbekiston Xalq demokratik partiyasining yoshlar guruhi",
+      name_oz: "Ўзбекистон Халқ демократик партиясининг ёшлар гуруҳи",
+      name_ru: "Молодёжная группа Народно-демократической партии Узбекистана",
+      name_en: "Youth Group of the People's Democratic Party of Uzbekistan",
+      image: "/images/parties/xalq.png",
+      description: "", description_oz: "", description_ru: "", description_en: "",
+    },
+    {
+      key: "ekologiya",
+      name: "O'zbekiston Ekologik partiyasining yoshlar guruhi",
+      name_oz: "Ўзбекистон Экологик партиясининг ёшлар гуруҳи",
+      name_ru: "Молодёжная группа Экологической партии Узбекистана",
+      name_en: "Youth Group of the Ecological Party of Uzbekistan",
+      image: "/images/parties/ekologiya.png",
+      description: "", description_oz: "", description_ru: "", description_en: "",
+    },
+  ];
+  const existingGuruhlari = getYoshlarGuruhlari();
+  const syncedGuruhlari: YoshlarGuruhi[] = canonicalGuruhlari.map((canon, i) => {
+    const prev = existingGuruhlari.find(x => x.key === canon.key) || existingGuruhlari[i];
+    return {
+      id: prev?.id || generateId(),
+      key: canon.key,
+      name: canon.name,
+      name_oz: canon.name_oz,
+      name_ru: canon.name_ru,
+      name_en: canon.name_en,
+      image: canon.image,
+      description: prev?.description || "",
+      description_oz: prev?.description_oz || "",
+      description_ru: prev?.description_ru || "",
+      description_en: prev?.description_en || "",
+    };
+  });
+  safeStorage.set(STORAGE_KEYS.YOSHLAR_GURUHLARI, syncedGuruhlari);
 };
 
 // Visitor Statistics Types

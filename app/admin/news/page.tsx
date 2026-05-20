@@ -34,6 +34,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { getNews, addNews, updateNews, deleteNews, initializeData, type NewsItem } from "@/lib/data-store";
+import LangTabInput from "@/components/lang-tab-input";
 
 const NewsPage = () => {
   const [news, setNews] = useState<NewsItem[]>([]);
@@ -45,14 +46,17 @@ const NewsPage = () => {
 
   // Form state
   const [formData, setFormData] = useState({
-    title: "",
+    title: "", title_oz: "", title_ru: "", title_en: "",
     date: "",
     time: "",
     image: "",
-    description: "",
+    description: "", description_oz: "", description_ru: "", description_en: "",
     location: "",
     category: "Qonunchilik palatasi",
   });
+
+  const handleLangField = (field: string, value: string) =>
+    setFormData((prev) => ({ ...prev, [field]: value }));
 
   useEffect(() => {
     initializeData();
@@ -91,11 +95,11 @@ const NewsPage = () => {
 
   const resetForm = () => {
     setFormData({
-      title: "",
+      title: "", title_oz: "", title_ru: "", title_en: "",
       date: "",
       time: "",
       image: "",
-      description: "",
+      description: "", description_oz: "", description_ru: "", description_en: "",
       location: "",
       category: "Qonunchilik palatasi",
     });
@@ -115,11 +119,11 @@ const NewsPage = () => {
   const openEditDialog = (item: NewsItem) => {
     setSelectedNews(item);
     setFormData({
-      title: item.title,
+      title: item.title, title_oz: item.title_oz || "", title_ru: item.title_ru || "", title_en: item.title_en || "",
       date: item.date,
       time: item.time,
       image: item.image,
-      description: item.description,
+      description: item.description, description_oz: item.description_oz || "", description_ru: item.description_ru || "", description_en: item.description_en || "",
       location: item.location,
       category: item.category,
     });
@@ -149,15 +153,13 @@ const NewsPage = () => {
               <DialogTitle>Yangi yangilik qo'shish</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">Sarlavha</Label>
-                <Input
-                  id="title"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="Yangilik sarlavhasi"
-                />
-              </div>
+              <LangTabInput
+                label="Sarlavha"
+                fieldBase="title"
+                values={formData}
+                onChange={handleLangField}
+                placeholder="Yangilik sarlavhasi"
+              />
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="date">Sana</Label>
@@ -214,16 +216,15 @@ const NewsPage = () => {
                   placeholder="Qonunchilik palatasi"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="description">Tavsif</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Yangilik tavsifi"
-                  rows={4}
-                />
-              </div>
+              <LangTabInput
+                label="Tavsif"
+                fieldBase="description"
+                values={formData}
+                onChange={handleLangField}
+                multiline
+                rows={4}
+                placeholder="Yangilik tavsifi"
+              />
             </div>
             <DialogFooter>
               <DialogClose asChild>
@@ -309,14 +310,13 @@ const NewsPage = () => {
             <DialogTitle>Yangilikni tahrirlash</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="edit-title">Sarlavha</Label>
-              <Input
-                id="edit-title"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              />
-            </div>
+            <LangTabInput
+              label="Sarlavha"
+              fieldBase="title"
+              values={formData}
+              onChange={handleLangField}
+              placeholder="Yangilik sarlavhasi"
+            />
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-date">Sana</Label>
@@ -368,15 +368,15 @@ const NewsPage = () => {
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-description">Tavsif</Label>
-              <Textarea
-                id="edit-description"
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                rows={4}
-              />
-            </div>
+            <LangTabInput
+              label="Tavsif"
+              fieldBase="description"
+              values={formData}
+              onChange={handleLangField}
+              multiline
+              rows={4}
+              placeholder="Yangilik tavsifi"
+            />
           </div>
           <DialogFooter>
             <DialogClose asChild>

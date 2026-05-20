@@ -34,6 +34,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { getArticles, addArticle, updateArticle, deleteArticle, initializeData, type Article } from "@/lib/data-store";
+import LangTabInput from "@/components/lang-tab-input";
 
 const ArticlesPage = () => {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -44,15 +45,18 @@ const ArticlesPage = () => {
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
 
   const [formData, setFormData] = useState({
-    title: "",
+    title: "", title_oz: "", title_ru: "", title_en: "",
     date: "",
     author: "",
     position: "",
     image: "",
-    description: "",
+    description: "", description_oz: "", description_ru: "", description_en: "",
     fileUrl: "",
     fileName: "",
   });
+
+  const handleLangField = (field: string, value: string) =>
+    setFormData((prev) => ({ ...prev, [field]: value }));
 
   useEffect(() => {
     initializeData();
@@ -91,12 +95,12 @@ const ArticlesPage = () => {
 
   const resetForm = () => {
     setFormData({
-      title: "",
+      title: "", title_oz: "", title_ru: "", title_en: "",
       date: "",
       author: "",
       position: "",
       image: "",
-      description: "",
+      description: "", description_oz: "", description_ru: "", description_en: "",
       fileUrl: "",
       fileName: "",
     });
@@ -106,12 +110,12 @@ const ArticlesPage = () => {
   const openEditDialog = (item: Article) => {
     setSelectedArticle(item);
     setFormData({
-      title: item.title,
+      title: item.title, title_oz: item.title_oz || "", title_ru: item.title_ru || "", title_en: item.title_en || "",
       date: item.date,
       author: item.author,
       position: item.position,
       image: item.image,
-      description: item.description,
+      description: item.description, description_oz: item.description_oz || "", description_ru: item.description_ru || "", description_en: item.description_en || "",
       fileUrl: item.fileUrl || "",
       fileName: item.fileName || "",
     });
@@ -161,15 +165,13 @@ const ArticlesPage = () => {
               <DialogTitle>Yangi maqola qo'shish</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">Sarlavha</Label>
-                <Input
-                  id="title"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="Maqola sarlavhasi"
-                />
-              </div>
+              <LangTabInput
+                label="Sarlavha"
+                fieldBase="title"
+                values={formData}
+                onChange={handleLangField}
+                placeholder="Maqola sarlavhasi"
+              />
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="author">Muallif</Label>
@@ -229,16 +231,15 @@ const ArticlesPage = () => {
                   <p className="text-sm text-green-600">✓ {formData.fileName}</p>
                 )}
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="description">Tavsif</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Maqola matni"
-                  rows={6}
-                />
-              </div>
+              <LangTabInput
+                label="Tavsif / Maqola matni"
+                fieldBase="description"
+                values={formData}
+                onChange={handleLangField}
+                multiline
+                rows={6}
+                placeholder="Maqola matni"
+              />
             </div>
             <DialogFooter>
               <DialogClose asChild>
@@ -320,14 +321,13 @@ const ArticlesPage = () => {
             <DialogTitle>Maqolani tahrirlash</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="edit-title">Sarlavha</Label>
-              <Input
-                id="edit-title"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              />
-            </div>
+            <LangTabInput
+              label="Sarlavha"
+              fieldBase="title"
+              values={formData}
+              onChange={handleLangField}
+              placeholder="Maqola sarlavhasi"
+            />
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-author">Muallif</Label>
@@ -383,15 +383,15 @@ const ArticlesPage = () => {
                 <p className="text-sm text-green-600">✓ {formData.fileName}</p>
               )}
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-description">Tavsif</Label>
-              <Textarea
-                id="edit-description"
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                rows={6}
-              />
-            </div>
+            <LangTabInput
+              label="Tavsif / Maqola matni"
+              fieldBase="description"
+              values={formData}
+              onChange={handleLangField}
+              multiline
+              rows={6}
+              placeholder="Maqola matni"
+            />
           </div>
           <DialogFooter>
             <DialogClose asChild>

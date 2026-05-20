@@ -4,8 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getArticles, initializeData, type Article } from "@/lib/data-store";
+import { getLocalized } from "@/lib/get-localized";
+import { useLang } from "@/lib/lang-context";
 
 export default function Maqolalar() {
+  const { tr, lang } = useLang();
   const [articles, setArticles] = useState<Article[]>([]);
 
   useEffect(() => {
@@ -18,10 +21,8 @@ export default function Maqolalar() {
       {/* Page Header */}
       <section className="bg-[#0047AB] text-white py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-4">Maqolalar</h1>
-          <p className="text-lg max-w-3xl">
-            O'zbekiston Respublikasi Yoshlar parlamenti a'zolarining maqolalari
-          </p>
+          <h1 className="text-3xl font-bold mb-4">{tr("articles-page-title")}</h1>
+          <p className="text-lg max-w-3xl">{tr("articles-page-desc")}</p>
         </div>
       </section>
 
@@ -42,11 +43,11 @@ export default function Maqolalar() {
                 />
               </div>
               <div className="p-4">
-                <h2 className="text-xl font-semibold">{article.title}</h2>
+                <h2 className="text-xl font-semibold">{getLocalized(article, "title", lang)}</h2>
                 <p className="text-sm text-gray-500 mb-2">
                   {article.date} — {article.author}, {article.position}
                 </p>
-                <p className="text-gray-700 mb-3">{article.description}</p>
+                <p className="text-gray-700 mb-3">{getLocalized(article, "description", lang)}</p>
                 {article.fileUrl ? (
                   <a
                     href={article.fileUrl}
@@ -54,14 +55,14 @@ export default function Maqolalar() {
                     rel="noopener noreferrer"
                     className="inline-block bg-[#0047AB] text-white text-sm px-4 py-2 rounded-md hover:bg-blue-700 transition"
                   >
-                    📄 {article.fileName || "Faylni ko'rish"}
+                    📄 {article.fileName || tr("fayl-korish")}
                   </a>
                 ) : (
                   <Link
                     href={`/maqolalar/${article.id}`}
                     className="inline-block border border-[#0047AB] text-[#0047AB] text-sm px-4 py-2 rounded-md hover:bg-[#0047AB] hover:text-white transition"
                   >
-                    Ko'rish
+                    {tr("korish")}
                   </Link>
                 )}
               </div>

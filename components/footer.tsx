@@ -1,7 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useLang } from "@/lib/lang-context";
 
 const Footer = () => {
+  const { tr } = useLang();
   const now = new Date();
   const formattedDate = `${String(now.getDate()).padStart(2, "0")}.${String(now.getMonth() + 1).padStart(2, "0")}.${now.getFullYear()} (GMT+5)`;
 
@@ -32,14 +36,12 @@ const Footer = () => {
 
             {/* Diqqat */}
             <p className="text-xs opacity-70 leading-relaxed">
-              Diqqat! Agar siz matnda xato topsangiz, uni tanlang va ma&apos;muriyatga xabar berish uchun{" "}
-              <kbd className="bg-white/20 rounded px-1 py-0.5 text-[10px]">Ctrl + Enter</kbd>{" "}
-              tugmalarini bosing
+              {tr("footer-diqqat")}
             </p>
 
             {/* Social icons */}
             <div>
-              <p className="text-xs font-medium mb-2 opacity-80">Ijtimoiy tarmoqlar:</p>
+              <p className="text-xs font-medium mb-2 opacity-80">{tr("footer-social")}</p>
               <div className="flex items-center gap-2">
                 {/* YouTube */}
                 <a
@@ -95,45 +97,45 @@ const Footer = () => {
 
           {/* Col 2 – Yoshlar parlamenti */}
           <div>
-            <h4 className="text-sm font-semibold mb-4 uppercase tracking-wide opacity-60">Yoshlar parlamenti</h4>
+            <h4 className="text-sm font-semibold mb-4 uppercase tracking-wide opacity-60">{tr("yoshlar-parlamenti")}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/yoshlar-parlamenti/tarixi" className="opacity-85 hover:opacity-100 hover:underline transition">Yoshlar parlamenti tarixi</Link></li>
-              <li><Link href="/yoshlar-parlamenti/kengashi" className="opacity-85 hover:opacity-100 hover:underline transition">Yoshlar parlament kengashi</Link></li>
-              <li><Link href="/yoshlar-parlamenti/rahbariyati" className="opacity-85 hover:opacity-100 hover:underline transition">Yoshlar parlamenti rahbariyati</Link></li>
-              <li><Link href="/yoshlar-parlamenti/qomitalar" className="opacity-85 hover:opacity-100 hover:underline transition">Yoshlar parlamenti qo&apos;mitalari</Link></li>
-              <li><Link href="/yoshlar-parlamenti/parlamentning-yoshlar-guruxlari" className="opacity-85 hover:opacity-100 hover:underline transition">Parlamentning yoshlar guruxlari</Link></li>
-              <li><Link href="/yoshlar-parlamenti/nizomi" className="opacity-85 hover:opacity-100 hover:underline transition">Yoshlar parlamenti nizomi</Link></li>
+              <li><Link href="/yoshlar-parlamenti/tarixi" className="opacity-85 hover:opacity-100 hover:underline transition">{tr("tarixi")}</Link></li>
+              <li><Link href="/yoshlar-parlamenti/kengashi" className="opacity-85 hover:opacity-100 hover:underline transition">{tr("kengashi")}</Link></li>
+              <li><Link href="/yoshlar-parlamenti/rahbariyati" className="opacity-85 hover:opacity-100 hover:underline transition">{tr("rahbariyati")}</Link></li>
+              <li><Link href="/yoshlar-parlamenti/qomitalar" className="opacity-85 hover:opacity-100 hover:underline transition">{tr("qomitalar")}</Link></li>
+              <li><Link href="/yoshlar-parlamenti/parlamentning-yoshlar-guruxlari" className="opacity-85 hover:opacity-100 hover:underline transition">{tr("yoshlar-guruxlari")}</Link></li>
+              <li><Link href="/yoshlar-parlamenti/nizomi" className="opacity-85 hover:opacity-100 hover:underline transition">{tr("nizomi")}</Link></li>
             </ul>
           </div>
 
           {/* Col 3 – Yangiliklar */}
           <div>
-            <h4 className="text-sm font-semibold mb-4 uppercase tracking-wide opacity-60">Yangiliklar</h4>
+            <h4 className="text-sm font-semibold mb-4 uppercase tracking-wide opacity-60">{tr("yangiliklar")}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/yangiliklar" className="opacity-85 hover:opacity-100 hover:underline transition">Yangiliklar</Link></li>
-              <li><Link href="/maqolalar" className="opacity-85 hover:opacity-100 hover:underline transition">Maqolalar</Link></li>
-              <li><Link href="/munosabatlar" className="opacity-85 hover:opacity-100 hover:underline transition">Munosabatlar</Link></li>
-              <li><Link href="/mediateka" className="opacity-85 hover:opacity-100 hover:underline transition">Mediateka</Link></li>
+              <li><Link href="/yangiliklar" className="opacity-85 hover:opacity-100 hover:underline transition">{tr("yangiliklar-sub")}</Link></li>
+              <li><Link href="/maqolalar" className="opacity-85 hover:opacity-100 hover:underline transition">{tr("maqolalar")}</Link></li>
+              <li><Link href="/munosabatlar" className="opacity-85 hover:opacity-100 hover:underline transition">{tr("munosabatlar")}</Link></li>
+              <li><Link href="/mediateka" className="opacity-85 hover:opacity-100 hover:underline transition">{tr("mediateka")}</Link></li>
             </ul>
           </div>
 
           {/* Col 4 – Tadbirlar */}
           <div>
-            <h4 className="text-sm font-semibold mb-4 uppercase tracking-wide opacity-60">Tadbirlar</h4>
+            <h4 className="text-sm font-semibold mb-4 uppercase tracking-wide opacity-60">{tr("tadbirlar")}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/tadbirlar/yalpi-majlislar" className="opacity-85 hover:opacity-100 hover:underline transition">Yalpi majlislar</Link></li>
-              <li><Link href="/tadbirlar/siyosiy-partiyalar" className="opacity-85 hover:opacity-100 hover:underline transition">Siyosiy partiyalar yoshlar guruhi</Link></li>
-              <li><Link href="/tadbirlar/qomitalar-yigilishi" className="opacity-85 hover:opacity-100 hover:underline transition">Qo&apos;mitalar yig&apos;ilishi</Link></li>
-              <li><Link href="/tadbirlar/boshqa" className="opacity-85 hover:opacity-100 hover:underline transition">Boshqa tadbirlar</Link></li>
+              <li><Link href="/tadbirlar/yalpi-majlislar" className="opacity-85 hover:opacity-100 hover:underline transition">{tr("yalpi-majlislar")}</Link></li>
+              <li><Link href="/tadbirlar/siyosiy-partiyalar" className="opacity-85 hover:opacity-100 hover:underline transition">{tr("siyosiy-partiyalar")}</Link></li>
+              <li><Link href="/tadbirlar/qomitalar-yigilishi" className="opacity-85 hover:opacity-100 hover:underline transition">{tr("qomitalar-yigilishi")}</Link></li>
+              <li><Link href="/tadbirlar/boshqa" className="opacity-85 hover:opacity-100 hover:underline transition">{tr("boshqa-tadbirlar")}</Link></li>
             </ul>
           </div>
 
           {/* Col 5 – Parlament diplomatiyasi */}
           <div>
-            <h4 className="text-sm font-semibold mb-4 uppercase tracking-wide opacity-60">Parlament diplomatiyasi</h4>
+            <h4 className="text-sm font-semibold mb-4 uppercase tracking-wide opacity-60">{tr("parlament-diplomatiyasi")}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/xalqaro-munosabatlar/xalqaro-tadbirlar" className="opacity-85 hover:opacity-100 hover:underline transition">Xalqaro tadbirlar</Link></li>
-              <li><Link href="/xalqaro-munosabatlar/dostlik-guruhlar" className="opacity-85 hover:opacity-100 hover:underline transition">Do&apos;stlik guruhlari</Link></li>
+              <li><Link href="/xalqaro-munosabatlar/xalqaro-tadbirlar" className="opacity-85 hover:opacity-100 hover:underline transition">{tr("xalqaro-tadbirlar")}</Link></li>
+              <li><Link href="/xalqaro-munosabatlar/dostlik-guruhlar" className="opacity-85 hover:opacity-100 hover:underline transition">{tr("dostlik-guruhlar")}</Link></li>
             </ul>
           </div>
         </div>
@@ -141,25 +143,25 @@ const Footer = () => {
         {/* ── Aloqa ───────────────────────────────────────── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 border-t border-white/20 pt-6 mt-8 text-sm">
           <div>
-            <p className="font-semibold mb-1 text-xs uppercase tracking-wide opacity-60">Manzil</p>
-            <p className="opacity-85">100035, Toshkent,<br />Bunyodkor shoh ko&apos;chasi 1</p>
+            <p className="font-semibold mb-1 text-xs uppercase tracking-wide opacity-60">{tr("footer-address")}</p>
+            <p className="opacity-85">{tr("footer-address-val")}</p>
           </div>
           <div>
-            <p className="font-semibold mb-1 text-xs uppercase tracking-wide opacity-60">Devonxona</p>
+            <p className="font-semibold mb-1 text-xs uppercase tracking-wide opacity-60">{tr("footer-devonxona")}</p>
             <a href="tel:+998782382294" className="opacity-85 hover:opacity-100">+998 782382294</a>
           </div>
           <div>
-            <p className="font-semibold mb-1 text-xs uppercase tracking-wide opacity-60">Fuqarolar murojaati</p>
+            <p className="font-semibold mb-1 text-xs uppercase tracking-wide opacity-60">{tr("footer-murojaat")}</p>
             <a href="tel:+998782382294" className="opacity-85 hover:opacity-100">+998 782382294</a>
           </div>
         </div>
 
         {/* ── Copyright bar ───────────────────────────────── */}
         <div className="border-t border-white/20 mt-6 pt-4 flex flex-col md:flex-row md:items-center justify-between gap-2 text-xs opacity-75">
-          <span>© {now.getFullYear()} Barcha huquqlar himoyalangan</span>
-          <span className="text-center">Saytning oxirgi yangilanish sanasi: {formattedDate}</span>
+          <span>© {now.getFullYear()} {tr("footer-rights")}</span>
+          <span className="text-center">{tr("footer-last-update")}: {formattedDate}</span>
           <span className="md:text-right">
-            Sayt yaratuvchisi:{" "}
+            {tr("footer-creator")}:{" "}
             <a
               href="https://t.me/BaxaTech25"
               target="_blank"

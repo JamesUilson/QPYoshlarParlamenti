@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useEffect, useState, use } from "react";
 import { Calendar, ChevronRight, ArrowLeft } from "lucide-react";
 import { getNewsById, getNews, initializeData, type NewsItem } from "@/lib/data-store";
+import { getLocalized } from "@/lib/get-localized";
+import { useLang } from "@/lib/lang-context";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -12,6 +14,7 @@ interface PageProps {
 
 export default function NewsDetail({ params }: PageProps) {
   const { id } = use(params);
+  const { lang } = useLang();
   const [newsItem, setNewsItem] = useState<NewsItem | null>(null);
   const [relatedNews, setRelatedNews] = useState<NewsItem[]>([]);
 
@@ -60,7 +63,7 @@ export default function NewsDetail({ params }: PageProps) {
           <div className="md:w-3/4">
             <div className="bg-white rounded-lg shadow-sm overflow-hidden">
               <div className="p-6">
-                <h1 className="text-2xl font-bold mb-4">{newsItem.title}</h1>
+                <h1 className="text-2xl font-bold mb-4">{getLocalized(newsItem, "title", lang)}</h1>
 
                 <div className="flex items-center text-sm text-gray-500 mb-6">
                   <Calendar className="h-4 w-4 mr-1" />
@@ -79,7 +82,7 @@ export default function NewsDetail({ params }: PageProps) {
                 </div>
 
                 <div className="prose max-w-none text-gray-700 leading-relaxed">
-                  {newsItem.description}
+                  {getLocalized(newsItem, "description", lang)}
                 </div>
 
                 <div className="mt-8 pt-4 border-t border-gray-200">
@@ -128,7 +131,7 @@ export default function NewsDetail({ params }: PageProps) {
                           href={`/yangiliklar/${related.id}`}
                           className="hover:text-blue-600"
                         >
-                          {related.title}
+                          {getLocalized(related, "title", lang)}
                         </Link>
                       </h3>
                       <p className="text-xs text-gray-500">{related.date}</p>

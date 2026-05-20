@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, use } from "react";
 import { getEventById, initializeData, type EventItem } from "@/lib/data-store";
+import { getLocalized } from "@/lib/get-localized";
+import { useLang } from "@/lib/lang-context";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -12,6 +14,7 @@ interface PageProps {
 
 export default function EventDetail({ params }: PageProps) {
   const { id } = use(params);
+  const { lang } = useLang();
   const [event, setEvent] = useState<EventItem | null>(null);
 
   useEffect(() => {
@@ -43,7 +46,7 @@ export default function EventDetail({ params }: PageProps) {
           <span className="inline-block bg-white/20 text-white text-xs px-2 py-1 rounded mb-3">
             {event.category}
           </span>
-          <h1 className="text-2xl md:text-3xl font-bold">{event.title}</h1>
+          <h1 className="text-2xl md:text-3xl font-bold">{getLocalized(event, "title", lang)}</h1>
         </div>
       </section>
 
@@ -72,7 +75,7 @@ export default function EventDetail({ params }: PageProps) {
               )}
             </div>
             <div className="text-gray-700 leading-relaxed whitespace-pre-line">
-              {event.description}
+              {getLocalized(event, "description", lang)}
             </div>
           </div>
         </div>

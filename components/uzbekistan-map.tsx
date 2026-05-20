@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronRight, ArrowLeft } from "lucide-react";
-import type { Member } from "@/lib/data-store";
+import type { Member, Committee, YoshlarGuruhi } from "@/lib/data-store";
 
 function norm(s: string | undefined | null): string {
   if (!s) return "";
@@ -36,6 +37,14 @@ function getMembersForRegion(regionId: string, members: Member[]): Member[] {
   return members.filter((m) => m && m.region != null && matcher(m.region));
 }
 
+const YOSHLAR_GURUHI_KEYS: Record<string, string> = {
+  ozlidep: "O'zLiDeP yoshlar guruhi",
+  milliy: "Milliy tiklanish yoshlar guruhi",
+  adolat: "Adolat yoshlar guruhi",
+  xdp: "XDP yoshlar guruhi",
+  ekologiya: "Ekologik partiya yoshlar guruhi",
+};
+
 const REGIONS = [
   { id: "karakalpakstan", title: "Qoraqalpog'iston Respublikasi", d: "M119 0L118 4 117 7 117 12 113 15 111 18 111 24 108 27 107 32 104 37 102 43 102 47 102 53 103 56 105 60 105 62 102 71 102 76 104 81 107 84 110 85 114 87 117 87 119 89 121 90 122 88 124 87 126 87 128 87 133 85 136 84 137 85 138 88 136 91 134 92 135 96 137 97 139 99 144 100 146 102 149 102 155 103 160 103 163 101 166 102 167 103 171 102 173 102 176 103 181 102 186 100 193 98 194 95 197 95 198 93 197 91 199 88 205 83 210 78 213 73 213 70 212 68 211 67 210 65 214 64 235 80 238 87 244 93 250 101 254 105 259 112 276 133 278 135 284 145 299 150 272 202 270 218 277 230 264 237 285 265 299 285 288 290 285 291 280 283 271 272 264 268 255 266 252 266 250 267 249 268 248 270 247 273 246 273 244 271 243 270 241 267 240 266 237 266 230 261 222 253 217 248 212 243 207 236 206 234 206 231 200 229 196 230 194 231 192 236 190 235 188 234 185 231 185 231 183 231 183 230 186 228 186 228 186 227 185 226 185 222 184 221 184 220 185 219 187 218 187 217 183 215 182 214 180 211 178 210 177 210 176 212 173 211 172 211 168 211 158 212 157 210 155 208 152 204 152 202 149 197 145 196 144 197 141 197 137 196 135 195 130 189 125 183 122 179 122 180 121 182 122 183 122 183 120 184 120 185 121 187 118 188 114 188 112 188 110 187 106 186 105 186 103 187 101 189 100 190 100 191 104 194 109 201 112 207 112 207 116 209 116 210 111 211 111 211 111 208 110 204 109 202 102 200 102 200 100 201 99 202 97 200 97 199 95 197 93 197 92 198 91 200 91 201 90 200 88 200 88 202 90 203 90 205 90 206 90 207 90 209 88 214 86 214 85 213 82 217 80 218 77 219 77 219 74 218 73 218 65 218 60 220 57 221 56 224 54 230 52 232 51 233 50 233 48 233 45 234 46 236 45 238 45 240 45 243 45 246 45 248 46 251 46 252 47 254 48 255 47 257 47 259 48 262 49 264 50 266 51 266 53 266 53 267 52 268 50 269 49 271 49 272 48 274 46 274 44 273 41 273 37 272 30 272 20 271 17 271 15 271 9 270 0 270 0 38 2 37 33 27 33 27 35 26 36 26 49 22 93 8 102 5Z" },
   { id: "xorazm", title: "Xorazm viloyati", d: "M283 312L281 309 280 308 280 304 278 301 277 299 278 298 277 293 277 291 275 288 273 287 272 286 272 285 268 280 264 277 261 275 260 274 259 273 257 274 254 272 252 272 250 274 250 277 249 279 249 280 247 281 245 281 244 281 243 281 239 279 237 277 235 277 229 275 222 276 217 276 212 276 207 277 204 274 201 272 195 268 191 266 190 265 190 263 190 259 191 256 193 254 191 252 188 245 189 242 194 241 196 243 197 243 199 244 199 243 198 241 196 240 194 239 192 237 192 236 195 231 201 229 206 230 207 231 207 234 210 242 212 243 217 248 221 252 230 260 236 265 240 266 241 267 243 269 246 273 248 273 249 271 253 266 256 266 259 266 265 268 272 272 280 280 286 291 289 290 292 293 298 300 299 301 298 306 293 311 287 319Z" },
@@ -53,18 +62,77 @@ const REGIONS = [
   { id: "andijon", title: "Andijon viloyati", d: "M674 332L674 332 673 331 669 329 667 329 664 328 663 326 663 325 663 323 664 322 666 322 667 322 668 321 671 320 670 319 671 318 672 318 673 318 673 317 675 316 677 314 678 312 680 311 681 312 681 311 681 309 682 310 683 309 683 308 684 308 684 307 689 306 692 304 699 304 699 305 697 307 698 309 700 312 706 314 707 313 710 311 712 307 713 308 717 306 720 304 723 309 724 308 728 308 730 310 734 314 743 316 746 316 750 317 750 318 750 321 750 321 748 321 746 323 745 324 744 326 742 328 738 331 737 332 737 334 739 335 739 336 737 337 735 337 732 337 730 339 728 342 726 341 725 340 724 337 722 336 721 337 721 339 720 339 717 338 716 336 714 335 712 334 711 333 709 332 707 332 704 332 703 331 701 332 699 332 696 334 692 335 692 338 689 338 685 339 683 340 681 341 676 342 676 341 675 339 675 338 674 337 674 335 674 333Z" },
 ];
 
+type Tab = "viloyatlar" | "qomitalar" | "guruhlar";
+
 interface Props {
   members: Member[];
+  committees?: Committee[];
+  yoshlarGuruhlari?: YoshlarGuruhi[];
   onRegionSelect?: (region: string | null) => void;
 }
 
-export default function UzbekistanMap({ members = [], onRegionSelect }: Props) {
+/* ---- Shared member list ---- */
+function MemberList({ list }: { list: Member[] }) {
+  if (list.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full py-10 text-center px-4">
+        <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mb-3">
+          <span className="text-2xl">👤</span>
+        </div>
+        <p className="text-sm text-gray-500">Hozircha a&apos;zo yo&apos;q</p>
+      </div>
+    );
+  }
+  return (
+    <ul>
+      {list.map((m) => (
+        <li key={m.id} className="border-b border-gray-50 last:border-0">
+          <Link
+            href={`/yoshlar-parlamenti-azolari/${m.id}`}
+            className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-colors group"
+          >
+            {m.image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={m.image} alt={m.name} className="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2 border-blue-100" />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 text-[#0047AB] font-bold text-sm">
+                {m.name.charAt(0)}
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-semibold text-gray-800 group-hover:text-[#0047AB] transition-colors line-clamp-2 leading-snug">{m.name}</p>
+              {m.fraction && <p className="text-[11px] text-gray-400 mt-0.5 truncate">{m.fraction}</p>}
+            </div>
+            <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-[#0047AB] transition-colors flex-shrink-0" />
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+export default function UzbekistanMap({
+  members = [],
+  committees = [],
+  yoshlarGuruhlari = [],
+  onRegionSelect,
+}: Props) {
+  const [activeTab, setActiveTab] = useState<Tab>("viloyatlar");
   const [activeRegion, setActiveRegion] = useState<string | null>(null);
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
+  const [activeCommittee, setActiveCommittee] = useState<Committee | null>(null);
+  const [activeGuruh, setActiveGuruh] = useState<YoshlarGuruhi | null>(null);
 
-  function select(title: string | null) {
+  function selectRegion(title: string | null) {
     setActiveRegion(title);
     onRegionSelect?.(title);
+  }
+
+  function switchTab(tab: Tab) {
+    setActiveTab(tab);
+    setActiveRegion(null);
+    setActiveCommittee(null);
+    setActiveGuruh(null);
   }
 
   function getColor(r: { id: string; title: string }) {
@@ -83,153 +151,233 @@ export default function UzbekistanMap({ members = [], onRegionSelect }: Props) {
     count: getMembersForRegion(r.id, members).length,
   })).sort((a, b) => b.count - a.count);
 
+  /* Committee members */
+  const committeeMembers = activeCommittee
+    ? members.filter((m) => m.committee === activeCommittee.name)
+    : [];
+
+  /* Guruh members — match by yoshlarGuruhi field using short name key */
+  const guruhMembers = activeGuruh
+    ? members.filter((m) => m.yoshlarGuruhi === YOSHLAR_GURUHI_KEYS[activeGuruh.key])
+    : [];
+
+  const TABS: { key: Tab; label: string }[] = [
+    { key: "viloyatlar", label: "Viloyatlar bo'yicha" },
+    { key: "qomitalar",  label: "Qo'mitalar bo'yicha" },
+    { key: "guruhlar",   label: "Yoshlar guruhlari bo'yicha" },
+  ];
+
+  /* ---- sidebar content ---- */
+  const sidebarSelected = activeCommittee || activeGuruh || activeRegion;
+  const sidebarCount =
+    activeCommittee ? committeeMembers.length :
+    activeGuruh ? guruhMembers.length :
+    activeRegion ? regionMembers.length : 0;
+  const sidebarLabel =
+    activeCommittee ? activeCommittee.name :
+    activeGuruh ? activeGuruh.name :
+    activeRegion ?? "";
+  const sidebarMembers =
+    activeCommittee ? committeeMembers :
+    activeGuruh ? guruhMembers :
+    regionMembers;
+
   return (
     <div className="w-full">
+      {/* ===== TABS ===== */}
+      <div className="flex flex-wrap gap-1 mb-5">
+        {TABS.map((t) => (
+          <button
+            key={t.key}
+            onClick={() => switchTab(t.key)}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${
+              activeTab === t.key
+                ? "bg-[#0047AB] text-white border-[#0047AB]"
+                : "bg-white text-gray-600 border-gray-200 hover:border-[#0047AB] hover:text-[#0047AB]"
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
       <div className="flex flex-col xl:flex-row gap-6">
 
-        {/* ===== XARITA ===== */}
+        {/* ===== LEFT / MAIN PANEL ===== */}
         <div className="flex-1 min-w-0">
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 shadow-sm h-full">
-            <p className="text-sm text-gray-400 mb-3">
-              {activeRegion
-                ? <span className="text-[#0047AB] font-semibold">{activeRegion}</span>
-                : "Viloyatni bosib a'zolarni ko'ring"}
-            </p>
-            <div className="w-full bg-slate-50 dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-800">
-              <svg
-                viewBox="0 0 793 517"
-                className="w-full h-auto min-h-[300px] md:min-h-[400px] block drop-shadow-sm"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                {REGIONS.map((r) => (
-                  <path
-                    key={r.id}
-                    id={r.id}
-                    d={r.d}
-                    fill={getColor(r)}
-                    stroke="white"
-                    strokeWidth={1.5}
-                    style={{ cursor: "pointer", transition: "fill 0.15s" }}
-                    onClick={() => select(activeRegion === r.title ? null : r.title)}
-                    onMouseEnter={() => setHoveredRegion(r.title)}
-                    onMouseLeave={() => setHoveredRegion(null)}
-                  >
-                    <title>{r.title}</title>
-                  </path>
-                ))}
-              </svg>
-            </div>
-            <div className="mt-3 flex flex-wrap gap-4 text-xs text-gray-400">
-              <span className="flex items-center gap-1.5">
-                <span className="w-4 h-3 rounded inline-block" style={{ background: "#93c5fd" }} />
-                A&apos;zo yo&apos;q
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-4 h-3 rounded inline-block" style={{ background: "#60a5fa" }} />
-                A&apos;zolar bor
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-4 h-3 rounded inline-block" style={{ background: "#0047AB" }} />
-                Tanlangan
-              </span>
-            </div>
+          <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm h-full">
+
+            {/* --- VILOYATLAR TAB: SVG map --- */}
+            {activeTab === "viloyatlar" && (
+              <>
+                <p className="text-sm text-gray-400 mb-3">
+                  {activeRegion
+                    ? <span className="text-[#0047AB] font-semibold">{activeRegion}</span>
+                    : "Viloyatni bosib a'zolarni ko'ring"}
+                </p>
+                <div className="w-full bg-slate-50 rounded-xl overflow-hidden border border-slate-100">
+                  <svg viewBox="0 0 793 517" className="w-full h-auto min-h-[300px] md:min-h-[400px] block drop-shadow-sm" xmlns="http://www.w3.org/2000/svg">
+                    {REGIONS.map((r) => (
+                      <path
+                        key={r.id}
+                        id={r.id}
+                        d={r.d}
+                        fill={getColor(r)}
+                        stroke="white"
+                        strokeWidth={1.5}
+                        style={{ cursor: "pointer", transition: "fill 0.15s" }}
+                        onClick={() => selectRegion(activeRegion === r.title ? null : r.title)}
+                        onMouseEnter={() => setHoveredRegion(r.title)}
+                        onMouseLeave={() => setHoveredRegion(null)}
+                      >
+                        <title>{r.title}</title>
+                      </path>
+                    ))}
+                  </svg>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-4 text-xs text-gray-400">
+                  <span className="flex items-center gap-1.5"><span className="w-4 h-3 rounded inline-block" style={{ background: "#93c5fd" }} />A&apos;zo yo&apos;q</span>
+                  <span className="flex items-center gap-1.5"><span className="w-4 h-3 rounded inline-block" style={{ background: "#60a5fa" }} />A&apos;zolar bor</span>
+                  <span className="flex items-center gap-1.5"><span className="w-4 h-3 rounded inline-block" style={{ background: "#0047AB" }} />Tanlangan</span>
+                </div>
+              </>
+            )}
+
+            {/* --- QOMITALAR TAB --- */}
+            {activeTab === "qomitalar" && (
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {committees.length === 0 && (
+                  <li className="col-span-2 text-center py-10 text-gray-400 text-sm">Qo'mitalar topilmadi</li>
+                )}
+                {committees.map((c) => {
+                  const count = members.filter((m) => m.committee === c.name).length;
+                  const isActive = activeCommittee?.id === c.id;
+                  return (
+                    <li key={c.id}>
+                      <button
+                        onClick={() => setActiveCommittee(isActive ? null : c)}
+                        className={`w-full text-left px-4 py-3 rounded-lg border-2 transition flex items-center gap-3 ${
+                          isActive
+                            ? "border-[#0047AB] bg-blue-50"
+                            : "border-gray-100 bg-gray-50 hover:border-blue-200 hover:bg-blue-50/50"
+                        }`}
+                      >
+                        {c.image ? (
+                          <div className="relative w-10 h-10 flex-shrink-0 rounded overflow-hidden border border-gray-200 bg-white">
+                            <Image src={c.image} alt={c.name} fill className="object-contain p-0.5" />
+                          </div>
+                        ) : (
+                          <div className="w-10 h-10 rounded bg-blue-100 flex items-center justify-center flex-shrink-0 text-[#0047AB] font-bold text-sm">
+                            {c.name.charAt(0)}
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-xs font-semibold leading-snug line-clamp-2 ${isActive ? "text-[#0047AB]" : "text-gray-700"}`}>{c.name}</p>
+                          <p className="text-[11px] text-gray-400 mt-0.5">{count} ta a&apos;zo</p>
+                        </div>
+                        <ChevronRight className={`w-4 h-4 flex-shrink-0 ${isActive ? "text-[#0047AB]" : "text-gray-300"}`} />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+
+            {/* --- YOSHLAR GURUHLARI TAB --- */}
+            {activeTab === "guruhlar" && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                {yoshlarGuruhlari.length === 0 && (
+                  <div className="col-span-5 text-center py-10 text-gray-400 text-sm">Ma'lumot topilmadi</div>
+                )}
+                {yoshlarGuruhlari.map((g) => {
+                  const count = members.filter((m) => m.yoshlarGuruhi === YOSHLAR_GURUHI_KEYS[g.key]).length;
+                  const isActive = activeGuruh?.id === g.id;
+                  return (
+                    <button
+                      key={g.id}
+                      onClick={() => setActiveGuruh(isActive ? null : g)}
+                      className={`flex flex-col items-center p-4 rounded-xl border-2 transition ${
+                        isActive
+                          ? "border-[#0047AB] bg-blue-50 shadow"
+                          : "border-gray-100 bg-white hover:border-blue-200 hover:shadow-sm"
+                      }`}
+                    >
+                      <div className="relative w-16 h-12 mb-2">
+                        <Image src={g.image} alt={g.name} fill className="object-contain" />
+                      </div>
+                      <p className={`text-[11px] font-medium text-center leading-snug line-clamp-3 ${isActive ? "text-[#0047AB]" : "text-gray-700"}`}>{g.name}</p>
+                      <span className={`mt-1.5 text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                        count > 0 ? "bg-blue-100 text-[#0047AB]" : "bg-gray-100 text-gray-400"
+                      }`}>{count} ta</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
           </div>
         </div>
 
         {/* ===== O'NG PANEL ===== */}
         <div className="xl:w-72 flex-shrink-0">
-          <div
-            className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col"
-            style={{ height: 500 }}
-          >
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col" style={{ height: 500 }}>
             {/* Panel header */}
-            <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 flex-shrink-0 flex items-center justify-between">
-              {activeRegion ? (
+            <div className="px-4 py-3 border-b border-gray-100 flex-shrink-0 flex items-center justify-between">
+              {sidebarSelected ? (
                 <>
-                  <div>
-                    <p className="text-sm font-bold text-[#0047AB] leading-tight">{activeRegion}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">{regionMembers.length} ta a&apos;zo</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-bold text-[#0047AB] leading-tight line-clamp-2">{sidebarLabel}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{sidebarCount} ta a&apos;zo</p>
                   </div>
                   <button
-                    onClick={() => select(null)}
-                    className="flex items-center gap-1 text-xs text-gray-400 hover:text-[#0047AB] transition"
+                    onClick={() => { setActiveRegion(null); setActiveCommittee(null); setActiveGuruh(null); }}
+                    className="flex items-center gap-1 text-xs text-gray-400 hover:text-[#0047AB] transition ml-2 flex-shrink-0"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" />
                     Orqaga
                   </button>
                 </>
               ) : (
-                <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">Viloyatlar bo&apos;yicha</p>
+                <p className="text-sm font-semibold text-gray-700">
+                  {activeTab === "viloyatlar" ? "Viloyatlar bo'yicha" :
+                   activeTab === "qomitalar"  ? "Qo'mitalar bo'yicha" :
+                   "Yoshlar guruhlari bo'yicha"}
+                </p>
               )}
             </div>
 
             {/* Scrollable body */}
             <div className="overflow-y-auto flex-1">
-              {!activeRegion ? (
-                /* ---- Viloyatlar statistikasi ---- */
+              {activeTab === "viloyatlar" && !activeRegion ? (
                 <ul>
                   {stats.map((r) => (
                     <li key={r.name}>
                       <button
-                        onClick={() => select(r.name)}
-                        className={`w-full flex items-center justify-between px-4 py-2.5 text-sm text-left transition-colors hover:bg-blue-50 dark:hover:bg-gray-700 border-b border-gray-50 dark:border-gray-700/50 ${
-                          activeRegion === r.name
-                            ? "bg-blue-50 font-semibold text-[#0047AB]"
-                            : "text-gray-700 dark:text-gray-300"
-                        }`}
+                        onClick={() => selectRegion(r.name)}
+                        className="w-full flex items-center justify-between px-4 py-2.5 text-sm text-left transition-colors hover:bg-blue-50 border-b border-gray-50 text-gray-700"
                       >
                         <span className="truncate pr-2">{r.name}</span>
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${
-                          r.count > 0 ? "bg-blue-100 text-[#0047AB]" : "bg-gray-100 dark:bg-gray-700 text-gray-400"
-                        }`}>
-                          {r.count}
-                        </span>
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${r.count > 0 ? "bg-blue-100 text-[#0047AB]" : "bg-gray-100 text-gray-400"}`}>{r.count}</span>
                       </button>
                     </li>
                   ))}
                 </ul>
-              ) : regionMembers.length === 0 ? (
-                /* ---- A'zo yo'q ---- */
+              ) : activeTab === "qomitalar" && !activeCommittee ? (
                 <div className="flex flex-col items-center justify-center h-full py-10 text-center px-4">
                   <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mb-3">
-                    <span className="text-2xl">🗺️</span>
+                    <span className="text-2xl">📋</span>
                   </div>
-                  <p className="text-sm text-gray-500">Bu viloyatda hozircha a&apos;zo yo&apos;q</p>
+                  <p className="text-sm text-gray-500">Qo&apos;mitani tanlang</p>
+                </div>
+              ) : activeTab === "guruhlar" && !activeGuruh ? (
+                <div className="flex flex-col items-center justify-center h-full py-10 text-center px-4">
+                  <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mb-3">
+                    <span className="text-2xl">🏛️</span>
+                  </div>
+                  <p className="text-sm text-gray-500">Yoshlar guruhini tanlang</p>
                 </div>
               ) : (
-                /* ---- A'zolar ro'yxati ---- */
-                <ul>
-                  {regionMembers.map((m) => (
-                    <li key={m.id} className="border-b border-gray-50 dark:border-gray-700/50 last:border-0">
-                      <Link
-                        href={`/yoshlar-parlamenti-azolari/${m.id}`}
-                        className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors group"
-                      >
-                        {m.image ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={m.image}
-                            alt={m.name}
-                            className="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2 border-blue-100"
-                          />
-                        ) : (
-                          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 text-[#0047AB] font-bold text-sm">
-                            {m.name.charAt(0)}
-                          </div>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold text-gray-800 dark:text-white group-hover:text-[#0047AB] transition-colors line-clamp-2 leading-snug">
-                            {m.name}
-                          </p>
-                          {m.fraction && (
-                            <p className="text-[11px] text-gray-400 mt-0.5 truncate">{m.fraction}</p>
-                          )}
-                        </div>
-                        <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-[#0047AB] transition-colors flex-shrink-0" />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                <MemberList list={sidebarMembers} />
               )}
             </div>
           </div>

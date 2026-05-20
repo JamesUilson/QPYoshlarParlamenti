@@ -5,37 +5,37 @@ import Link from "next/link";
 import { Calendar, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getNews, initializeData, type NewsItem } from "@/lib/data-store";
+import { getLocalized } from "@/lib/get-localized";
+import { useLang } from "@/lib/lang-context";
 
 export default function Yangiliklar() {
+  const { tr, lang } = useLang();
   const [news, setNews] = useState<NewsItem[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState("Barchasi");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   useEffect(() => {
     initializeData();
     setNews(getNews());
   }, []);
 
-  const filteredNews = selectedCategory === "Barchasi" 
-    ? news 
-    : news.filter(item => item.category === selectedCategory);
-
   const categories = [
-    "Barchasi",
-    "Qonunchilik palatasi",
-    "Yoshlar parlamenti",
-    "Xalqaro aloqalar",
+    { key: "cat-all", value: "" },
+    { key: "cat-qonunchilik", value: "Qonunchilik palatasi" },
+    { key: "cat-yoshlar", value: "Yoshlar parlamenti" },
+    { key: "cat-xalqaro", value: "Xalqaro aloqalar" },
   ];
+
+  const filteredNews = selectedCategory === ""
+    ? news
+    : news.filter(item => item.category === selectedCategory);
 
   return (
     <main className="min-h-screen bg-gray-50 pb-16">
       {/* Page Header */}
       <section className="bg-[#0047AB] text-white py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-4">Yangiliklar</h1>
-          <p className="text-lg max-w-3xl">
-            O'zbekiston Respublikasi Yoshlar parlamenti faoliyati bilan bog'liq
-            so'nggi yangiliklar
-          </p>
+          <h1 className="text-3xl font-bold mb-4">{tr("news-page-title")}</h1>
+          <p className="text-lg max-w-3xl">{tr("news-page-desc")}</p>
         </div>
       </section>
 
@@ -44,16 +44,16 @@ export default function Yangiliklar() {
         <div className="flex flex-col md:flex-row gap-8">
           <div className="md:w-3/4">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">So'nggi yangiliklar</h2>
+              <h2 className="text-2xl font-bold">{tr("news-latest")}</h2>
               <div className="relative">
-                <select 
+                <select
                   className="bg-white border border-gray-300 rounded-md px-4 py-2 pr-8 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
                 >
-                  {categories.map((category, index) => (
-                    <option key={index} value={category}>
-                      {category}
+                  {categories.map((cat) => (
+                    <option key={cat.key} value={cat.value}>
+                      {tr(cat.key)}
                     </option>
                   ))}
                 </select>
@@ -105,14 +105,14 @@ export default function Yangiliklar() {
                         </span>
                       </div>
                       <h3 className="text-xl font-semibold mb-2">
-                        {item.title}
+                        {getLocalized(item, "title", lang)}
                       </h3>
-                      <p className="text-gray-700 mb-4">{item.description}</p>
+                      <p className="text-gray-700 mb-4">{getLocalized(item, "description", lang)}</p>
                       <Link
                         href={`/yangiliklar/${item.id}`}
                         className="text-blue-600 hover:underline flex items-center text-sm font-medium"
                       >
-                        Batafsil o'qish{" "}
+                        {tr("batafsil-oqish")}{" "}
                         <ChevronRight className="h-4 w-4 ml-1" />
                       </Link>
                     </div>
@@ -124,7 +124,7 @@ export default function Yangiliklar() {
             <div className="flex justify-center mt-8">
               <nav className="flex items-center">
                 <button className="px-3 py-1 border border-gray-300 rounded-l-md hover:bg-gray-100">
-                  &laquo; Oldingi
+                  &laquo; {tr("oldingi")}
                 </button>
                 <button className="px-3 py-1 border-t border-b border-gray-300 bg-blue-600 text-white">
                   1
@@ -136,7 +136,7 @@ export default function Yangiliklar() {
                   3
                 </button>
                 <button className="px-3 py-1 border border-gray-300 rounded-r-md hover:bg-gray-100">
-                  Keyingi &raquo;
+                  {tr("keyingi")} &raquo;
                 </button>
               </nav>
             </div>
@@ -144,18 +144,18 @@ export default function Yangiliklar() {
 
           <div className="md:w-1/4 space-y-6">
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-bold mb-4">Kategoriyalar</h3>
+              <h3 className="text-lg font-bold mb-4">{tr("kategoriyalar")}</h3>
               <ul className="space-y-2">
-                {categories.map((category, index) => (
-                  <li key={index}>
+                {categories.map((cat) => (
+                  <li key={cat.key}>
                     <button
-                      onClick={() => setSelectedCategory(category)}
+                      onClick={() => setSelectedCategory(cat.value)}
                       className={`flex items-center text-left w-full hover:text-blue-600 transition ${
-                        selectedCategory === category ? 'text-blue-600 font-medium' : 'text-gray-700'
+                        selectedCategory === cat.value ? 'text-blue-600 font-medium' : 'text-gray-700'
                       }`}
                     >
                       <ChevronRight className="h-4 w-4 mr-2" />
-                      {category}
+                      {tr(cat.key)}
                     </button>
                   </li>
                 ))}
@@ -163,7 +163,7 @@ export default function Yangiliklar() {
             </div>
 
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-bold mb-4">Arxiv</h3>
+              <h3 className="text-lg font-bold mb-4">{tr("arxiv")}</h3>
               <ul className="space-y-2">
                 <li>
                   <Link
@@ -205,7 +205,7 @@ export default function Yangiliklar() {
             </div>
 
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-bold mb-4">Teglar</h3>
+              <h3 className="text-lg font-bold mb-4">{tr("teglar")}</h3>
               <div className="flex flex-wrap gap-2">
                 <Link
                   href="/yangiliklar?tag=parlament"

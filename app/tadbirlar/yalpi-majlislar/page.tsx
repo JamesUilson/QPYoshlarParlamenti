@@ -6,15 +6,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { getEvents, initializeData, type EventItem } from "@/lib/data-store";
 import PageSidebar from "@/components/page-sidebar";
-
-const sidebarLinks = [
-  { title: "Yalpi majlislar", href: "/tadbirlar/yalpi-majlislar" },
-  { title: "Siyosiy partiyalar yig'ilishlari", href: "/tadbirlar/siyosiy-partiyalar" },
-  { title: "Qo'mitalar yig'ilishi", href: "/tadbirlar/qomitalar-yigilishi" },
-  { title: "Boshqa tadbirlar", href: "/tadbirlar/boshqa" },
-];
+import { useLang } from "@/lib/lang-context";
 
 export default function YalpiMajlislar() {
+  const { tr } = useLang();
+  const sidebarLinks = [
+    { title: tr("yalpi-majlislar"), href: "/tadbirlar/yalpi-majlislar" },
+    { title: tr("siyosiy-partiyalar"), href: "/tadbirlar/siyosiy-partiyalar" },
+    { title: tr("qomitalar-yigilishi"), href: "/tadbirlar/qomitalar-yigilishi" },
+    { title: tr("boshqa-tadbirlar"), href: "/tadbirlar/boshqa" },
+  ];
   const [events, setEvents] = useState<EventItem[]>([]);
 
   useEffect(() => {
@@ -28,10 +29,8 @@ export default function YalpiMajlislar() {
       {/* Page Header */}
       <section className="bg-[#0047AB] text-white py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-4">Yalpi majlislar</h1>
-          <p className="text-lg max-w-3xl">
-            O'zbekiston Respublikasi Oliy Majlisi Qonunchilik palatasi yalpi majlislari haqida ma'lumot
-          </p>
+          <h1 className="text-3xl font-bold mb-4">{tr("yalpi-title")}</h1>
+          <p className="text-lg max-w-3xl">{tr("yalpi-desc")}</p>
         </div>
       </section>
 
@@ -40,7 +39,7 @@ export default function YalpiMajlislar() {
           <div className="flex-1 min-w-0">
             {events.length === 0 ? (
               <div className="text-center py-12 text-gray-500 bg-white rounded-lg border">
-                <p className="text-lg">Hozircha yalpi majlislar mavjud emas</p>
+                <p className="text-lg">{tr("hozircha-yoq")}</p>
               </div>
             ) : (
               <div className="space-y-6">
@@ -62,7 +61,7 @@ export default function YalpiMajlislar() {
                           {event.location && <div className="flex items-center gap-1"><MapPin className="h-4 w-4" /><span>{event.location}</span></div>}
                         </div>
                         <p className="text-gray-700 mb-4 line-clamp-3">{event.description}</p>
-                        <Link href={`/tadbirlar/${event.id}`} className="inline-block bg-[#0047AB] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition">Batafsil</Link>
+                        <Link href={`/tadbirlar/${event.id}`} className="inline-block bg-[#0047AB] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition">{tr("batafsil")}</Link>
                       </div>
                     </div>
                   </div>

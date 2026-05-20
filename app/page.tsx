@@ -4,15 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, useCallback } from "react";
 import { Calendar, ChevronRight, Clock, ChevronLeft } from "lucide-react";
-import { getNews, getEvents, getArticles, getMembers, getMedia, initializeData, type NewsItem, type EventItem, type Article, type Member, type MediaItem } from "@/lib/data-store";
+import { getNews, getEvents, getArticles, getMembers, getMedia, getCommittees, getYoshlarGuruhlari, initializeData, type NewsItem, type EventItem, type Article, type Member, type MediaItem, type Committee, type YoshlarGuruhi } from "@/lib/data-store";
 import UzbekistanMap from "@/components/uzbekistan-map";
-
-const MONTH_NAMES = [
-  "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
-  "Iyul", "Avgust", "Sentabr", "Oktabr", "Noyabr", "Dekabr",
-];
-
-const DAY_NAMES = ["Ya", "Du", "Se", "Cho", "Pa", "Ju", "Sha"];
+import { useLang } from "@/lib/lang-context";
 
 function getCalendarDays(year: number, month: number) {
   const firstDay = new Date(year, month, 1).getDay();
@@ -55,11 +49,19 @@ const HERO_SLIDES = [
 ];
 
 export default function Home() {
+  const { tr } = useLang();
+  const MONTH_NAMES = [
+    tr("month-1"), tr("month-2"), tr("month-3"), tr("month-4"), tr("month-5"), tr("month-6"),
+    tr("month-7"), tr("month-8"), tr("month-9"), tr("month-10"), tr("month-11"), tr("month-12"),
+  ];
+  const DAY_NAMES = [tr("day-1"), tr("day-2"), tr("day-3"), tr("day-4"), tr("day-5"), tr("day-6"), tr("day-7")];
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [events, setEvents] = useState<EventItem[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
   const [media, setMedia] = useState<MediaItem[]>([]);
+  const [committees, setCommittees] = useState<Committee[]>([]);
+  const [yoshlarGuruhlari, setYoshlarGuruhlari] = useState<YoshlarGuruhi[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [calYear, setCalYear] = useState(new Date().getFullYear());
   const [calMonth, setCalMonth] = useState(new Date().getMonth());
@@ -71,6 +73,8 @@ export default function Home() {
     setArticles(getArticles());
     setMembers(getMembers());
     setMedia(getMedia());
+    setCommittees(getCommittees());
+    setYoshlarGuruhlari(getYoshlarGuruhlari());
   }, []);
 
   useEffect(() => {
@@ -128,7 +132,7 @@ export default function Home() {
                     href={slide.link}
                     className="inline-block bg-blue-600 text-white text-sm sm:text-base px-5 sm:px-6 py-2 sm:py-3 rounded-md font-medium hover:bg-blue-700 transition"
                   >
-                    Batafsil
+                    {tr("batafsil")}
                   </Link>
                 </div>
               </div>
@@ -164,9 +168,9 @@ export default function Home() {
       <section className="py-10 bg-white">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">Yangiliklar</h2>
+            <h2 className="text-2xl font-bold">{tr("yangiliklar")}</h2>
             <Link href="/yangiliklar" className="text-[#0047AB] hover:underline flex items-center text-sm font-medium">
-              Barchasini ko'rish <ChevronRight className="h-4 w-4 ml-1" />
+              {tr("barchasi-korish")} <ChevronRight className="h-4 w-4 ml-1" />
             </Link>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -249,9 +253,9 @@ export default function Home() {
       <section className="py-10 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">Tadbirlar</h2>
+            <h2 className="text-2xl font-bold">{tr("tadbirlar")}</h2>
             <Link href="/tadbirlar" className="text-[#0047AB] hover:underline flex items-center text-sm font-medium">
-              Barchasini ko'rish <ChevronRight className="h-4 w-4 ml-1" />
+              {tr("barchasi-korish")} <ChevronRight className="h-4 w-4 ml-1" />
             </Link>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -313,9 +317,9 @@ export default function Home() {
       <section className="py-10 bg-white">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">Maqolalar</h2>
+            <h2 className="text-2xl font-bold">{tr("maqolalar")}</h2>
             <Link href="/maqolalar" className="text-[#0047AB] hover:underline flex items-center text-sm font-medium">
-              Barchasini ko'rish <ChevronRight className="h-4 w-4 ml-1" />
+              {tr("barchasi-korish")} <ChevronRight className="h-4 w-4 ml-1" />
             </Link>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -380,9 +384,9 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-1 h-7 bg-[#0047AB] rounded" />
-            <h2 className="text-2xl font-bold text-gray-900">Interaktiv xarita</h2>
+            <h2 className="text-2xl font-bold text-gray-900">{tr("section-xarita")}</h2>
           </div>
-          <UzbekistanMap members={members} />
+          <UzbekistanMap members={members} committees={committees} yoshlarGuruhlari={yoshlarGuruhlari} />
         </div>
       </section>
 
@@ -395,9 +399,9 @@ export default function Home() {
           <section className="py-12 bg-white">
             <div className="container mx-auto px-4">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Mediateka</h2>
+                <h2 className="text-2xl font-bold">{tr("mediateka")}</h2>
                 <Link href="/mediateka" className="text-[#0047AB] hover:underline flex items-center text-sm font-medium">
-                  Barchasini ko&apos;rish <ChevronRight className="h-4 w-4 ml-1" />
+                  {tr("barchasi-korish")} <ChevronRight className="h-4 w-4 ml-1" />
                 </Link>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -596,6 +600,7 @@ const USEFULL_LINKS = [
 const VISIBLE = 5;
 
 function UsefullSection() {
+  const { tr } = useLang();
   const [start, setStart] = useState(0);
   const total = USEFULL_LINKS.length;
   const prev = () => setStart((s) => (s - 1 + total) % total);
@@ -606,7 +611,7 @@ function UsefullSection() {
     <section className="py-10 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold">Foydali havolalar</h2>
+          <h2 className="text-xl font-bold">{tr("section-foydali")}</h2>
           <div className="flex gap-2">
             <button
               onClick={prev}

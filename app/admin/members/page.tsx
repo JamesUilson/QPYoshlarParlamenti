@@ -34,8 +34,11 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { getMembers, addMember, updateMember, deleteMember, getCommittees, getDistricts, initializeData, type Member, type Committee, type ElectionDistrict } from "@/lib/data-store";
+import { useLang } from "@/lib/lang-context";
+import { getLocalized } from "@/lib/get-localized";
 
 const MembersPage = () => {
+  const { lang } = useLang();
   const [members, setMembers] = useState<Member[]>([]);
   const [committees, setCommittees] = useState<Committee[]>([]);
   const [districts, setDistricts] = useState<ElectionDistrict[]>([]);
@@ -336,7 +339,7 @@ const MembersPage = () => {
                   className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
                 >
                   <option value="">— Qo'mita tanlang —</option>
-                  {committees.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
+                  {committees.map(c => <option key={c.id} value={c.name}>{getLocalized(c, "name", lang) || c.name}</option>)}
                 </select>
               </div>
               <div className="space-y-2">
@@ -581,7 +584,7 @@ const MembersPage = () => {
                 className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
               >
                 <option value="">— Qo'mita tanlang —</option>
-                {committees.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
+                {committees.map(c => <option key={c.id} value={c.name}>{getLocalized(c, "name", lang) || c.name}</option>)}
               </select>
             </div>
             <div className="space-y-2">

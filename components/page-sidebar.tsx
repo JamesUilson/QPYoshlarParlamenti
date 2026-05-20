@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLang } from "@/lib/lang-context";
 
 interface SidebarLink {
   title: string;
@@ -14,6 +15,7 @@ interface PageSidebarProps {
 
 export default function PageSidebar({ links }: PageSidebarProps) {
   const pathname = usePathname();
+  const { tr } = useLang();
 
   return (
     <aside className="w-full lg:w-64 flex-shrink-0 space-y-4">
@@ -50,8 +52,8 @@ export default function PageSidebar({ links }: PageSidebarProps) {
           </svg>
         </div>
         <div>
-          <p className="text-xs text-white/70">Murojaat uchun</p>
-          <p className="text-sm font-semibold">Virtual qabulxona</p>
+          <p className="text-xs text-white/70">{tr("footer-murojaat")}</p>
+          <p className="text-sm font-semibold">{tr("virtual-qabulxona")}</p>
         </div>
       </a>
 
@@ -65,7 +67,7 @@ export default function PageSidebar({ links }: PageSidebarProps) {
         <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 text-[#0047AB] font-bold text-xs">OMB</div>
         <div>
           <p className="text-sm font-semibold text-gray-800">"Ombudsman"</p>
-          <p className="text-xs text-gray-500 leading-tight">O'zbekiston Respublikasi Oliy Majlisining Inson huquqlari bo'yicha vakili</p>
+          <p className="text-xs text-gray-500 leading-tight">O&apos;zbekiston Respublikasi Oliy Majlisining Inson huquqlari bo&apos;yicha vakili</p>
         </div>
       </a>
 

@@ -21,8 +21,14 @@ import {
   getKengash, addKengashMember, updateKengashMember, deleteKengashMember,
   initializeData, type KengashMember,
 } from "@/lib/data-store";
+import LangTabInput from "@/components/lang-tab-input";
 
-const emptyForm = { name: "", position: "", image: "", description: "" };
+const emptyForm = {
+  name: "",
+  position: "", position_oz: "", position_ru: "", position_en: "",
+  image: "",
+  description: "", description_oz: "", description_ru: "", description_en: "",
+};
 
 export default function AdminKengashPage() {
   const [list, setList] = useState<KengashMember[]>([]);
@@ -74,9 +80,17 @@ export default function AdminKengashPage() {
 
   const openEdit = (item: KengashMember) => {
     setSelected(item);
-    setFormData({ name: item.name, position: item.position, image: item.image || "", description: item.description || "" });
+    setFormData({
+      name: item.name,
+      position: item.position, position_oz: item.position_oz || "", position_ru: item.position_ru || "", position_en: item.position_en || "",
+      image: item.image || "",
+      description: item.description || "", description_oz: item.description_oz || "", description_ru: item.description_ru || "", description_en: item.description_en || "",
+    });
     setIsEdit(true);
   };
+
+  const handleLangField = (field: string, value: string) =>
+    setFormData(f => ({ ...f, [field]: value }));
 
   const FormFields = () => (
     <div className="space-y-4 py-4">
@@ -84,20 +98,28 @@ export default function AdminKengashPage() {
         <Label>F.I.Sh</Label>
         <Input value={formData.name} onChange={e => setFormData(f => ({ ...f, name: e.target.value }))} placeholder="To'liq ism" />
       </div>
-      <div className="space-y-2">
-        <Label>Lavozimi</Label>
-        <Input value={formData.position} onChange={e => setFormData(f => ({ ...f, position: e.target.value }))} placeholder="Yoshlar parlamenti raisi" />
-      </div>
+      <LangTabInput
+        label="Lavozimi"
+        fieldBase="position"
+        values={formData}
+        onChange={handleLangField}
+        placeholder="Yoshlar parlamenti raisi"
+      />
       <div className="space-y-2">
         <Label>Rasm URL</Label>
         <Input value={formData.image} onChange={e => setFormData(f => ({ ...f, image: e.target.value }))} placeholder="/images/..." />
         <Input type="file" accept="image/*" onChange={handleImageUpload} className="cursor-pointer" />
         {formData.image?.startsWith("data:") && <p className="text-xs text-green-600">✓ Rasm yuklandi</p>}
       </div>
-      <div className="space-y-2">
-        <Label>Tavsif</Label>
-        <Textarea value={formData.description} onChange={e => setFormData(f => ({ ...f, description: e.target.value }))} rows={3} placeholder="Qisqacha ma'lumot" />
-      </div>
+      <LangTabInput
+        label="Tavsif"
+        fieldBase="description"
+        values={formData}
+        onChange={handleLangField}
+        multiline
+        rows={3}
+        placeholder="Qisqacha ma'lumot"
+      />
     </div>
   );
 

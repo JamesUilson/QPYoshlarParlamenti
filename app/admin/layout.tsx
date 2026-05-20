@@ -58,6 +58,8 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     { href: "/admin/members", icon: Users, label: "A'zolar" },
     { href: "/admin/kengash", icon: Users, label: "Kengash tarkibi" },
     { href: "/admin/rahbariyat", icon: Users, label: "Rahbariyat" },
+    { href: "/admin/committees", icon: Users, label: "Qo'mitalar" },
+    { href: "/admin/yoshlar-guruhlari", icon: Users, label: "Yoshlar guruhlari" },
     { href: "/admin/districts", icon: LayoutDashboard, label: "Saylov okruglari" },
     { href: "/admin/friendship-groups", icon: Globe, label: "Do'stlik guruhlar" },
     { href: "/admin/articles", icon: FileText, label: "Maqolalar" },

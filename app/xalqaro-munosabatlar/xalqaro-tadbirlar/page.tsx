@@ -6,13 +6,14 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getEvents, initializeData, type EventItem } from "@/lib/data-store";
 import PageSidebar from "@/components/page-sidebar";
-
-const sidebarLinks = [
-  { title: "Xalqaro tadbirlar", href: "/xalqaro-munosabatlar/xalqaro-tadbirlar" },
-  { title: "Do'stlik guruhlar", href: "/xalqaro-munosabatlar/dostlik-guruhlar" },
-];
+import { useLang } from "@/lib/lang-context";
 
 export default function XalqaroTadbirlar() {
+  const { tr } = useLang();
+  const sidebarLinks = [
+    { title: tr("xalqaro-tadbirlar"), href: "/xalqaro-munosabatlar/xalqaro-tadbirlar" },
+    { title: tr("dostlik-guruhlar"), href: "/xalqaro-munosabatlar/dostlik-guruhlar" },
+  ];
   const [events, setEvents] = useState<EventItem[]>([]);
 
   useEffect(() => {
@@ -25,10 +26,8 @@ export default function XalqaroTadbirlar() {
     <main className="min-h-screen bg-gray-50 pb-16">
       <section className="bg-[#0047AB] text-white py-10">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-2">Xalqaro tadbirlar</h1>
-          <p className="text-blue-100 max-w-3xl">
-            O'zbekiston Respublikasi Yoshlar parlamenti tomonidan tashkil etiladigan xalqaro tadbirlar
-          </p>
+          <h1 className="text-3xl font-bold mb-2">{tr("xalqaro-page-title")}</h1>
+          <p className="text-blue-100 max-w-3xl">{tr("xalqaro-page-desc")}</p>
         </div>
       </section>
 
@@ -38,8 +37,7 @@ export default function XalqaroTadbirlar() {
           <div className="flex-1 min-w-0">
             {events.length === 0 ? (
               <div className="text-center py-16 text-gray-500 bg-white rounded-lg border">
-                <p className="text-lg font-medium">Hozircha xalqaro tadbirlar mavjud emas.</p>
-                <p className="text-sm mt-2">Admin panel orqali "Xalqaro tadbirlar" kategoriyasida tadbir qo'shing.</p>
+                <p className="text-lg font-medium">{tr("hozircha-yoq")}</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
