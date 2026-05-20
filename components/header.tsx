@@ -87,12 +87,12 @@ const Header = () => {
           <div className="flex items-center justify-between h-14">
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 flex-shrink-0">
-              <ParliamentLogo className="h-10 w-auto object-contain" />
-              <div className="hidden sm:block leading-tight">
-                <div className="text-[10px] text-gray-500 uppercase tracking-wide">O'ZBEKISTON RESPUBLIKASI OLIY MAJLISI</div>
-                <div className="text-[10px] text-gray-500 uppercase tracking-wide">QONUNCHILIK PALATASI HUZURIDAGI</div>
-                <div className="text-[13px] font-bold text-[#0047AB] uppercase tracking-wide">YOSHLAR PARLAMENTI</div>
+            <Link href="/" className="flex items-center gap-1.5 xs:gap-3 flex-shrink-1 min-w-0">
+              <ParliamentLogo className="h-8 xs:h-10 w-auto object-contain flex-shrink-0" />
+              <div className="leading-none xs:leading-tight min-w-0">
+                <div className="text-[6px] xs:text-[8px] sm:text-[10px] text-gray-500 uppercase tracking-wide truncate">O'ZBEKISTON RESPUBLIKASI OLIY MAJLISI</div>
+                <div className="text-[6px] xs:text-[8px] sm:text-[10px] text-gray-500 uppercase tracking-wide truncate">QONUNCHILIK PALATASI HUZURIDAGI</div>
+                <div className="text-[9px] xs:text-[11px] sm:text-[13px] font-bold text-[#0047AB] uppercase tracking-wide truncate">YOSHLAR PARLAMENTI</div>
               </div>
             </Link>
 
@@ -193,14 +193,77 @@ const Header = () => {
               </Link>
             </div>
 
-            {/* Mobile hamburger */}
-            <button className="md:hidden p-2 text-gray-700" onClick={() => setIsMobileMenuOpen(v => !v)}>
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {isMobileMenuOpen
-                  ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                  : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />}
-              </svg>
-            </button>
+            {/* Mobile controls — Accessibility and Language */}
+            <div className="flex md:hidden items-center gap-1.5 flex-shrink-0">
+
+              {/* Accessibility */}
+              <div className="relative" ref={accessRef}>
+                <button
+                  onClick={() => { setShowAccessibility(v => !v); setShowLang(false); }}
+                  className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 hover:border-[#0047AB] hover:text-[#0047AB] transition text-gray-600"
+                  title={tr("korinish")}
+                >
+                  <span className="text-[14px] font-bold">A</span>
+                </button>
+                {showAccessibility && (
+                  <div className="absolute right-[-40px] top-full mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-50 p-4 w-60">
+                    <p className="text-xs font-bold text-gray-700 mb-3">{tr("korinish")}</p>
+
+                    {/* Font size buttons */}
+                    <div className="flex items-center gap-2 mb-4">
+                      {([0,1,2] as const).map(i => (
+                        <button key={i} onClick={() => setFontStep(i)}
+                          className={`w-9 h-9 border rounded font-semibold transition ${fontStep === i ? "border-[#0047AB] text-[#0047AB] bg-blue-50" : "border-gray-300 text-gray-600 hover:border-gray-400"}`}
+                          style={{ fontSize: i === 0 ? "11px" : i === 1 ? "14px" : "17px" }}
+                        >A</button>
+                      ))}
+                      {/* Dark mode toggle */}
+                      <button
+                        onClick={toggleTheme}
+                        title={isDark ? tr("oddiy-rejim") : tr("qorongu-rejim")}
+                        className={`w-9 h-9 border rounded flex items-center justify-center transition ${isDark ? "bg-gray-900 text-yellow-300 border-gray-900" : "border-gray-300 text-gray-600 hover:border-gray-400"}`}
+                      >
+                        {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                      </button>
+                    </div>
+
+                    {/* Slider */}
+                    <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">{tr("shrift-olchami")}</p>
+                    <input
+                      type="range" min={0} max={2} step={1}
+                      value={fontStep}
+                      onChange={(e) => setFontStep(Number(e.target.value))}
+                      className="w-full accent-[#0047AB] cursor-pointer"
+                    />
+                    <div className="flex justify-between text-[10px] text-gray-400 mt-0.5">
+                      <span>{fontPct[fontStep]} ga</span>
+                      <span>{fontPct[fontStep]}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Language */}
+              <div className="relative" ref={langRef}>
+                <button
+                  onClick={() => { setShowLang(v => !v); setShowAccessibility(false); }}
+                  className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 text-gray-600 hover:border-[#0047AB] hover:text-[#0047AB] transition"
+                >
+                  <Globe className="h-4 w-4" />
+                </button>
+                {showLang && (
+                  <div className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded shadow-lg z-50 py-1 w-28">
+                    {(Object.keys(LANG_LABELS) as Lang[]).map(l => (
+                      <button key={l} onClick={() => { setLang(l); setShowLang(false); }}
+                        className={`block w-full text-left px-4 py-2 text-xs hover:bg-gray-50 ${lang === l ? "text-[#0047AB] font-medium" : "text-gray-700"}`}>
+                        {LANG_LABELS[l]}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+            </div>
           </div>
         </div>
       </div>
@@ -253,24 +316,40 @@ const Header = () => {
         </div>
       </div>
 
-      {/* ── Mobile Menu ──────────────────────────────────── */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden bg-white border-t shadow-lg z-50">
-          <div className="container mx-auto px-4 py-4 space-y-1">
+      {/* ── Mobile Menu (Right Slide-out Drawer) ───────────────── */}
+      <div className={`fixed inset-0 z-50 lg:hidden transition-opacity duration-300 ${isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+        {/* Dark backdrop overlay */}
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-xs" onClick={() => setIsMobileMenuOpen(false)} />
+        
+        {/* Drawer panel */}
+        <div className={`absolute inset-y-0 right-0 w-3/4 sm:w-1/2 bg-white dark:bg-gray-900 shadow-2xl flex flex-col transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"}`}>
+          
+          {/* Header of Drawer */}
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+            <span className="text-sm font-bold text-gray-800 dark:text-gray-200">{tr("menyu")}</span>
+            <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-gray-500 hover:text-gray-850 dark:hover:text-white">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Scrollable list of links */}
+          <div className="flex-1 overflow-y-auto p-5 space-y-2">
             {navItems.map(nav => (
-              <div key={nav.key}>
+              <div key={nav.key} className="border-b border-gray-50 dark:border-gray-800 pb-2">
                 <button
                   onClick={() => setMobileExpanded(mobileExpanded === nav.key ? null : nav.key)}
-                  className="flex items-center justify-between w-full px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded"
+                  className="flex items-center justify-between w-full py-2 text-sm font-bold text-gray-700 dark:text-gray-300 hover:text-[#0047AB]"
                 >
                   {nav.label}
-                  <ChevronDown className={`h-4 w-4 transition-transform ${mobileExpanded === nav.key ? "rotate-180" : ""}`} />
+                  <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${mobileExpanded === nav.key ? "rotate-180" : ""}`} />
                 </button>
                 {mobileExpanded === nav.key && (
-                  <div className="pl-4 border-l-2 border-[#0047AB] ml-3 mb-1">
+                  <div className="pl-4 border-l-2 border-[#0047AB] ml-1 mt-1 space-y-1">
                     {nav.items.map(item => (
                       <Link key={item.href} href={item.href} onClick={() => setIsMobileMenuOpen(false)}
-                        className="block px-3 py-2 text-sm text-gray-600 hover:text-[#0047AB]">
+                        className="block py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-[#0047AB] transition-colors">
                         {item.title}
                       </Link>
                     ))}
@@ -279,16 +358,16 @@ const Header = () => {
               </div>
             ))}
             <Link href="/yoshlar-parlamenti-azolari" onClick={() => setIsMobileMenuOpen(false)}
-              className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded">{tr("azolar")}</Link>
+              className="block py-3 text-sm font-bold text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-800 hover:text-[#0047AB]">{tr("azolar")}</Link>
             <Link href="/mediateka" onClick={() => setIsMobileMenuOpen(false)}
-              className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded">{tr("mediateka")}</Link>
+              className="block py-3 text-sm font-bold text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-800 hover:text-[#0047AB]">{tr("mediateka")}</Link>
             <a href="https://t.me/yoshlar_qp_murojaat_bot" target="_blank" rel="noopener noreferrer"
-              className="block px-3 py-2 text-sm text-[#0047AB] font-medium hover:bg-gray-50 rounded">{tr("virtual-qabulxona")}</a>
+              className="block py-3 text-sm font-bold text-[#0047AB] hover:underline">{tr("virtual-qabulxona")}</a>
             <Link href="/admin/login" onClick={() => setIsMobileMenuOpen(false)}
-              className="block px-3 py-2 text-sm font-medium text-white bg-[#0047AB] hover:bg-blue-700 rounded">{tr("kirish")}</Link>
+              className="block text-center mt-6 px-4 py-2.5 text-sm font-semibold text-white bg-[#0047AB] hover:bg-blue-700 rounded-lg shadow-sm transition">{tr("kirish")}</Link>
           </div>
         </div>
-      )}
+      </div>
     </header>
   );
 };

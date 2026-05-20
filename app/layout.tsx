@@ -14,7 +14,14 @@ export const metadata: Metadata = {
   title: "O'zbekiston Respublikasi Yoshlar Parlamenti",
   description:
     "O'zbekiston Respublikasi Oliy Majlisi Qonunchilik palatasi huzuridagi Yoshlar parlamenti rasmiy veb-sayti",
-    generator: 'v0.dev'
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+  },
+  generator: 'v0.dev'
 }
 
 export default function RootLayout({

@@ -5,12 +5,15 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import React, { useEffect, useState, use } from "react";
 import { getArticleById, initializeData, type Article } from "@/lib/data-store";
+import { getLocalized } from "@/lib/get-localized";
+import { useLang } from "@/lib/lang-context";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
 export default function ArticleDetail({ params }: PageProps) {
+  const { tr, lang } = useLang();
   const { id } = use(params);
   const [article, setArticle] = useState<Article | null>(null);
 
@@ -29,7 +32,7 @@ export default function ArticleDetail({ params }: PageProps) {
             className="inline-flex items-center text-blue-600 hover:underline mb-6"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Ortga qaytish
+            {tr("ortga")}
           </Link>
           <div className="text-lg text-gray-500">Maqola topilmadi.</div>
         </div>
@@ -46,7 +49,7 @@ export default function ArticleDetail({ params }: PageProps) {
             className="inline-flex items-center text-blue-600 hover:underline"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Ortga qaytish
+            {tr("ortga")}
           </Link>
         </div>
 
@@ -54,18 +57,18 @@ export default function ArticleDetail({ params }: PageProps) {
           <div className="relative h-[300px] w-full">
             <Image
               src={article.image || "/placeholder.svg"}
-              alt={article.title}
+              alt={getLocalized(article, "title", lang)}
               fill
               className="object-cover"
             />
           </div>
           <div className="p-6">
-            <h1 className="text-2xl font-bold mb-2">{article.title}</h1>
+            <h1 className="text-2xl font-bold mb-2">{getLocalized(article, "title", lang)}</h1>
             <p className="text-sm text-gray-500 mb-4">
               {article.date} — {article.author}, {article.position}
             </p>
             <div className="text-gray-700 leading-relaxed whitespace-pre-line">
-              {article.description}
+              {getLocalized(article, "description", lang)}
             </div>
 
             {article.fileUrl && (
@@ -74,9 +77,9 @@ export default function ArticleDetail({ params }: PageProps) {
                   href={article.fileUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block bg-[#0047AB] text-white text-sm px-4 py-2 rounded-md hover:bg-blue-700 transition"
+                  className="inline-block bg-[#0047AB] text-white text-sm px-4 py-2 rounded-md hover:bg-blue-700 transition animate-pulse"
                 >
-                  📄 {article.fileName || "Faylni yuklab olish"}
+                  📄 {article.fileName || tr("fayl-yuklash") || "Faylni yuklab olish"}
                 </a>
               </div>
             )}

@@ -48,23 +48,12 @@ export default function Maqolalar() {
                   {article.date} — {article.author}, {article.position}
                 </p>
                 <p className="text-gray-700 mb-3">{getLocalized(article, "description", lang)}</p>
-                {article.fileUrl ? (
-                  <a
-                    href={article.fileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block bg-[#0047AB] text-white text-sm px-4 py-2 rounded-md hover:bg-blue-700 transition"
-                  >
-                    📄 {article.fileName || tr("fayl-korish")}
-                  </a>
-                ) : (
-                  <Link
-                    href={`/maqolalar/${article.id}`}
-                    className="inline-block border border-[#0047AB] text-[#0047AB] text-sm px-4 py-2 rounded-md hover:bg-[#0047AB] hover:text-white transition"
-                  >
-                    {tr("korish")}
-                  </Link>
-                )}
+                <Link
+                  href={`/maqolalar/${article.id}`}
+                  className="inline-block bg-[#0047AB] text-white text-sm px-4 py-2 rounded-md hover:bg-blue-700 transition"
+                >
+                  {tr("korish")}
+                </Link>
               </div>
             </div>
           ))}
