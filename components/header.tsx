@@ -207,7 +207,7 @@ const Header = () => {
               </div>
 
               {/* Kirish */}
-              <Link href="/hjtl232jhand/login" className="flex items-center gap-1 px-3 py-1.5 text-xs text-gray-600 hover:text-[#0047AB] transition">
+              <Link href="https://yoshlar-parlamenti-kpi.vercel.app" className="flex items-center gap-1 px-3 py-1.5 text-xs text-gray-600 hover:text-[#0047AB] transition">
                 <User className="h-3.5 w-3.5" /> {tr("kirish")}
               </Link>
             </div>
@@ -382,7 +382,7 @@ const Header = () => {
               className="block py-3 text-sm font-bold text-gray-700 dark:text-gray-300 border-b border-gray-50 dark:border-gray-800 hover:text-[#0047AB]">{tr("mediateka")}</Link>
             <a href="https://t.me/yoshlar_qp_murojaat_bot" target="_blank" rel="noopener noreferrer"
               className="block py-3 text-sm font-bold text-[#0047AB] hover:underline">{tr("virtual-qabulxona")}</a>
-            <Link href="/hjtl232jhand/login" onClick={() => setIsMobileMenuOpen(false)}
+            <Link href="https://yoshlar-parlamenti-kpi.vercel.app/" onClick={() => setIsMobileMenuOpen(false)}
               className="block text-center mt-6 px-4 py-2.5 text-sm font-semibold text-white bg-[#0047AB] hover:bg-blue-700 rounded-lg shadow-sm transition">{tr("kirish")}</Link>
           </div>
         </div>
